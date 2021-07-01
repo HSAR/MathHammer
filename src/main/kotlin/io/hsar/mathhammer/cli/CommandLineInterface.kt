@@ -2,12 +2,16 @@ package io.hsar.wh40k.combatsimulator.cli
 
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
+import com.fasterxml.jackson.core.util.DefaultIndenter
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.MathHammer
 import io.hsar.wh40k.combatsimulator.cli.input.AttackerDTO
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
+import java.io.File
 import kotlin.system.exitProcess
 
 abstract class Command(val name: String) {
@@ -26,10 +30,13 @@ class SimulateCombat : Command("math-hammer") {
         // Run the number of simulations requested
         MathHammer(
                 // Read and parse input files
-                attackers = objectMapper.readValue<List<AttackerDTO>>(attackerFilePath),
-                defenders = objectMapper.readValue<List<DefenderDTO>>(attackerFilePath)
+                attackers = objectMapper.readValue<List<AttackerDTO>>(File(attackerFilePath).readText()),
+                defenders = objectMapper.readValue<List<DefenderDTO>>(File(defenderFilePath).readText())
         )
                 .runSimulation()
+                .map { (attackResults, offensiveProfile) ->
+                    "${offensiveProfile.name} expects ${attackResults.expectedKills} kills against ${attackResults.targetName}: ${attackResults.expectedDamage} damage."
+                }
                 .also { result ->
                     println(objectWriter.writeValueAsString(result))
                 }
@@ -42,7 +49,12 @@ class SimulateCombat : Command("math-hammer") {
     companion object {
         private val objectMapper = jacksonObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+        private val objectWriter = objectMapper.writer(
+                DefaultPrettyPrinter()
+                        .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
+        )
+
     }
 }
 

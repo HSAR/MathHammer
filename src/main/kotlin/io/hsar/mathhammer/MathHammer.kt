@@ -1,6 +1,8 @@
 package io.hsar.mathhammer
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.hsar.mathhammer.cli.input.WeaponType
+import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.statistics.HitCalculator
 import io.hsar.mathhammer.statistics.SaveCalculator
@@ -13,7 +15,7 @@ class MathHammer(
         val attackers: Collection<AttackerDTO>,
         val defenders: Collection<DefenderDTO>) {
 
-    fun runSimulation(): Result {
+    fun runSimulation(): List<Pair<AttackResult, OffensiveProfile>> {
         return attackers.map { attacker ->
             attacker.weapons
                     .map { weapon ->
@@ -23,6 +25,7 @@ class MathHammer(
                             weapon.weaponValue
                         }
                         OffensiveProfile(
+                                name = "${attacker.name} firing ${weapon.name}",
                                 skill = attacker.BS,
                                 attacks = weaponAttacks,
                                 strength = weapon.strength,
@@ -35,20 +38,17 @@ class MathHammer(
                 .flatMap { offensiveProfile ->
                     // Play each offensive profile against each defensive profile
                     defenders.map { defensiveProfile ->
-                        offensiveProfile to apply(offensiveProfile, defensiveProfile)
+                        apply(offensiveProfile, defensiveProfile) to offensiveProfile
                     }
                 }
-                .toMap()
-                .let { resultMap ->
-                    Result(
-                            offensiveProfileToDamageDone = resultMap
-                    )
-                }
+                .sortedByDescending { it.first }
     }
 
-    fun apply(offensiveProfile: OffensiveProfile, defensiveProfile: DefenderDTO): Double {
+    fun apply(offensiveProfile: OffensiveProfile, defensiveProfile: DefenderDTO): AttackResult {
+        val numHitsRequiredToKill = Math.ceil(defensiveProfile.wounds.toDouble() / offensiveProfile.damage).toInt()
+
         return offensiveProfile
-                .let { (skill, attacks) ->
+                .let { (_, skill, attacks) ->
                     HitCalculator.hits(skill, attacks)
                 }
                 .let { expectedHits ->
@@ -62,9 +62,13 @@ class MathHammer(
                             save = defensiveProfile.armourSave,
                             invuln = defensiveProfile.invulnSave)
                 }
+                .let { expectedSuccessfulAttacks ->
+                    AttackResult(
+                            expectedHits = expectedSuccessfulAttacks,
+                            damage = offensiveProfile.damage,
+                            expectedKills = expectedSuccessfulAttacks.toInt() / numHitsRequiredToKill,
+                            targetName = defensiveProfile.name
+                    )
+                }
     }
 }
-
-data class Result(
-        val offensiveProfileToDamageDone: Map<OffensiveProfile, Double>
-)
