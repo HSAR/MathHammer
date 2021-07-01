@@ -1,36 +1,42 @@
 [
   {
-    "name": "Primaris Hellblaster",
+    "name": "Hellblaster",
     "pointsCost": 33,
     "WS": 3,
     "BS": 3,
     "userStrength": 4,
-    "attacks": 2,
+    "attacks": 2.2,
     "weapons": [
-      {
-        "name": "Plasma Incinerator",
-        "weaponType": "RAPID_FIRE",
-        "weaponValue": 1,
-        "strength": 7,
-        "AP": -4,
-        "damage": 1
-      },
-      {
-        "name": "Assault Plasma Incinerator",
-        "weaponType": "ASSAULT",
-        "weaponValue": 3,
-        "strength": 6,
-        "AP": -4,
-        "damage": 1
-      },
-      {
-        "name": "Heavy Plasma Incinerator",
-        "weaponType": "HEAVY",
-        "weaponValue": 1,
-        "strength": 8,
-        "AP": -4,
-        "damage": 2
-      }
+      [
+        {
+          "name": "Plasma Incinerator",
+          "weaponType": "RAPID_FIRE",
+          "weaponValue": 1,
+          "strength": 7,
+          "AP": -4,
+          "damage": 1
+        }
+      ],
+      [
+        {
+          "name": "Assault Plasma Incinerator",
+          "weaponType": "ASSAULT",
+          "weaponValue": 3,
+          "strength": 6,
+          "AP": -4,
+          "damage": 1
+        }
+      ],
+      [
+        {
+          "name": "Heavy Plasma Incinerator",
+          "weaponType": "HEAVY",
+          "weaponValue": 1,
+          "strength": 8,
+          "AP": -4,
+          "damage": 2
+        }
+      ]
     ]
   }
 ]

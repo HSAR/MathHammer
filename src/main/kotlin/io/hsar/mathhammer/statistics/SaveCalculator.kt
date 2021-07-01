@@ -2,7 +2,7 @@ package io.hsar.mathhammer.statistics
 
 object SaveCalculator {
     fun failedSaves(AP: Int, save: Int, invuln: Int = 7): Double {
-        return (save + AP)
+        return (save + Math.abs(AP))
                 .let { modifiedSave ->
                     Math.min(modifiedSave, invuln)
                             .let { saveToUse ->

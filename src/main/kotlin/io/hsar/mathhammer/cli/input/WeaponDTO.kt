@@ -2,13 +2,14 @@ package io.hsar.mathhammer.cli.input
 
 data class WeaponDTO(
     val name: String,
-    val weaponExtraCost: Int = 0,
+    val hitModifier: Int = 0,
+    val pointsExtra: Int = 0,
     val weaponType: WeaponType,
-    val weaponValue: Int,
-    val strength: Int,
+    val weaponValue: String,
+    val strength: String,
     val AP: Int,
-    val damage: Int
-// TODO: Effects (e.g. "6s to hit auto-wound", "6s to hit cause a mortal wound", etc)
+    val damage: String,
+    val abilities: List<Ability> = emptyList()
 )
 
 enum class WeaponType {
@@ -17,4 +18,9 @@ enum class WeaponType {
     RAPID_FIRE,
     HEAVY,
     PISTOL
+}
+
+enum class Ability {
+    FLAMER,
+    BLAST
 }

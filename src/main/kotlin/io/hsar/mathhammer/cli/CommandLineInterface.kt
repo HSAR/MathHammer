@@ -9,8 +9,10 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.MathHammer
-import io.hsar.mathhammer.cli.input.WeaponType
+import io.hsar.mathhammer.cli.input.WeaponType.*
+import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.model.OffensiveProfile
+import io.hsar.mathhammer.statistics.DiceStringCalculator
 import io.hsar.wh40k.combatsimulator.cli.input.AttackerDTO
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import java.io.File
@@ -24,74 +26,121 @@ class SimulateCombat : Command("math-hammer") {
 
     enum class ComparisonMode { DIRECT, NORMALISED }
 
-    @Parameter(names = arrayOf("--attacker", "--attackers"), description = "Path to an input file describing unit profile(s) attacking", required = true)
+    @Parameter(
+        names = arrayOf("--attacker", "--attackers"),
+        description = "Path to an input file describing unit profile(s) attacking",
+        required = true
+    )
     private var attackerFilePath = ""
 
-    @Parameter(names = arrayOf("--defender", "--defenders"), description = "Path to an input file describing unit profile(s) defending", required = true)
+    @Parameter(
+        names = arrayOf("--defender", "--defenders"),
+        description = "Path to an input file describing unit profile(s) defending",
+        required = true
+    )
     private var defenderFilePath = ""
 
-    @Parameter(names = arrayOf("--mode"), description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 100pts of each attacking profile", required = false)
+    @Parameter(
+        names = arrayOf("--mode"),
+        description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 100pts of each attacking profile",
+        required = false
+    )
     private var mode = ComparisonMode.DIRECT
 
     override fun run() {
         // Generate offensive profiles according to the mode requested
         objectMapper.readValue<List<AttackerDTO>>(File(attackerFilePath).readText())
-                .let { attackerDTOs ->
-                    generateOffensiveProfiles(attackerDTOs, mode)
-                }
-                .let { offensiveProfiles ->
-                    MathHammer(
-                            defenders = objectMapper.readValue<List<DefenderDTO>>(File(defenderFilePath).readText())
+            .let { attackerDTOs ->
+                generateOffensiveProfiles(attackerDTOs, mode)
+            }
+            .let { offensiveProfiles ->
+                MathHammer(
+                    defenders = objectMapper.readValue<List<DefenderDTO>>(File(defenderFilePath).readText())
+                )
+                    .runSimulation(
+                        offensiveProfiles
                     )
-                            .runSimulation(
-                                    offensiveProfiles
+                    .map { (attackResults, offensiveProfile) ->
+                        val weaponNames = offensiveProfile.weaponsAttacking.map { it.attackName }
+                        """${
+                            String.format(
+                                "%.2f",
+                                offensiveProfile.modelsFiring
                             )
-                            .map { (attackResults, offensiveProfile) ->
-                                "${offensiveProfile.name} expect ${attackResults.expectedKills} kills against ${attackResults.targetName}: ${String.format("%.3f", attackResults.expectedDamage)} damage."
-                            }
-                            .also { result ->
-                                println(objectWriter.writeValueAsString(result))
-                            }
-                }
+                        } ${offensiveProfile.firingUnitName}s attacking with $weaponNames:
+                           Expecting ${attackResults.expectedKills} kills with ${
+                            String.format(
+                                "%.3f",
+                                attackResults.expectedDamage
+                            )
+                        } damage."""
+                    }
+                    .forEach() { result ->
+                        println(result)
+                    }
+            }
     }
 
     companion object {
         val NORMALISED_POINTS = 100.0
 
         private val objectMapper = jacksonObjectMapper()
-                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                .enable(SerializationFeature.INDENT_OUTPUT)
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .enable(SerializationFeature.INDENT_OUTPUT)
         private val objectWriter = objectMapper.writer(
-                DefaultPrettyPrinter()
-                        .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
+            DefaultPrettyPrinter()
+                .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
         )
 
         fun generateOffensiveProfiles(attackers: List<AttackerDTO>, mode: ComparisonMode): List<OffensiveProfile> {
             return attackers
-                    .map { attacker ->
-                        attacker.weapons
-                                .map { weapon ->
-                                    val modelsFiring: Double = when (mode) {
-                                        ComparisonMode.DIRECT -> 1.0 // TODO: Use default unit size
-                                        ComparisonMode.NORMALISED -> NORMALISED_POINTS / attacker.pointsCost
-                                    }
-
-                                    val weaponAttacks = if (weapon.weaponType == WeaponType.RAPID_FIRE) {
-                                        weapon.weaponValue * 2
-                                    } else {
-                                        weapon.weaponValue
-                                    }
-                                    OffensiveProfile(
-                                            name = "${String.format("%.2f", modelsFiring)} ${attacker.name}s firing ${weapon.name}",
-                                            skill = attacker.BS,
-                                            attacks = weaponAttacks * modelsFiring,
-                                            strength = weapon.strength,
-                                            AP = weapon.AP,
-                                            damage = weapon.damage
-                                    )
+                .map { attacker ->
+                    attacker.weapons
+                        .map { weaponProfiles ->
+                            val attackProfiles = weaponProfiles.map { weapon ->
+                                val weaponAttacks = when (weapon.weaponType) {
+                                    MELEE -> attacker.attacks.toDouble()
+                                    RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
+                                    else -> weapon.weaponValue.toDoubleOrNull() ?: DiceStringCalculator.expectedValue(weapon.weaponValue)
                                 }
-                    }
-                    .flatten()
+                                val weaponStrength = when (weapon.weaponType) {
+                                    MELEE -> when (weapon.strength.lowercase()) {
+                                        "x2" -> attacker.userStrength * 2
+                                        "+3" -> attacker.userStrength + 3
+                                        "+2" -> attacker.userStrength + 2
+                                        "+1" -> attacker.userStrength + 1
+                                        "+0" -> attacker.userStrength
+                                        else -> attacker.userStrength + weapon.strength.toInt()
+                                    }
+                                    else -> weapon.strength.toInt()
+                                }
+                                val weaponDamage = weapon.damage.toDoubleOrNull() ?: DiceStringCalculator.expectedValue(weapon.damage)
+
+                                AttackProfile(
+                                    attackName = weapon.name,
+                                    attacks = weaponAttacks,
+                                    strength = weaponStrength,
+                                    AP = weapon.AP,
+                                    damage = weaponDamage,
+                                    abilities = weapon.abilities
+                                )
+                            }
+
+                            val modelsFiring: Double = when (mode) {
+                                ComparisonMode.DIRECT -> 1.0 // TODO: Use default unit size
+                                ComparisonMode.NORMALISED -> NORMALISED_POINTS / (attacker.pointsCost + weaponProfiles.map { it.pointsExtra }
+                                    .sum())
+                            }
+
+                            OffensiveProfile(
+                                firingUnitName = attacker.name,
+                                skill = attacker.BS,
+                                modelsFiring = modelsFiring,
+                                weaponsAttacking = attackProfiles
+                            )
+                        }
+                }
+                .flatten()
         }
 
     }
@@ -99,9 +148,9 @@ class SimulateCombat : Command("math-hammer") {
 
 fun main(args: Array<String>) {
     val instances: Map<String, Command> = listOf(
-            SimulateCombat()
+        SimulateCombat()
     )
-            .associateBy { it.name }
+        .associateBy { it.name }
     val commander = JCommander()
     instances.forEach { name, command -> commander.addCommand(name, command) }
 

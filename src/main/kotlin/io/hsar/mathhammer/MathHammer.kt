@@ -1,55 +1,65 @@
 package io.hsar.mathhammer
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.hsar.mathhammer.cli.input.WeaponType
+import io.hsar.mathhammer.cli.input.Ability
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.OffensiveProfile
+import io.hsar.mathhammer.model.OffensiveResult
 import io.hsar.mathhammer.statistics.HitCalculator
+import io.hsar.mathhammer.statistics.KillsCalculator
 import io.hsar.mathhammer.statistics.SaveCalculator
 import io.hsar.mathhammer.statistics.WoundCalculator
-import io.hsar.wh40k.combatsimulator.cli.input.AttackerDTO
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
+import java.lang.IllegalStateException
 
 
 class MathHammer(
-        val defenders: Collection<DefenderDTO>) {
+    val defenders: Collection<DefenderDTO>
+) {
 
-    fun runSimulation(offensiveProfiles: Collection<OffensiveProfile>): List<Pair<AttackResult, OffensiveProfile>> {
+    fun runSimulation(offensiveProfiles: Collection<OffensiveProfile>): List<Pair<OffensiveResult, OffensiveProfile>> {
         return offensiveProfiles
-                .flatMap { offensiveProfile ->
-                    // Play each offensive profile against each defensive profile
-                    defenders.map { defensiveProfile ->
-                        apply(offensiveProfile, defensiveProfile) to offensiveProfile
-                    }
+            .flatMap { offensiveProfile ->
+                // Play each offensive profile against each defensive profile
+                defenders.map { defensiveProfile ->
+                    apply(offensiveProfile, defensiveProfile) to offensiveProfile
                 }
-                .sortedByDescending { it.first }
+            }
+            .sortedByDescending { it.first }
     }
 
-    fun apply(offensiveProfile: OffensiveProfile, defensiveProfile: DefenderDTO): AttackResult {
-        val numHitsRequiredToKill = Math.ceil(defensiveProfile.wounds.toDouble() / offensiveProfile.damage).toInt()
-
-        return offensiveProfile
-                .let { (_, skill, attacks) ->
-                    HitCalculator.hits(skill, attacks)
-                }
-                .let { expectedHits ->
-                    expectedHits * WoundCalculator.woundingHits(
-                            strength = offensiveProfile.strength,
-                            toughness = defensiveProfile.toughness)
-                }
-                .let { expectedWounds ->
-                    expectedWounds * SaveCalculator.failedSaves(
-                            AP = offensiveProfile.AP,
+    fun apply(offensiveProfile: OffensiveProfile, defensiveProfile: DefenderDTO): OffensiveResult {
+        return offensiveProfile.weaponsAttacking
+            .map { attackProfile ->
+                offensiveProfile
+                    .let { (_, skill, attacks) ->
+                        if (attackProfile.abilities.contains(Ability.FLAMER)) {
+                            attacks // flamers auto-hit
+                        } else {
+                            HitCalculator.hits(skill, attacks)
+                        }
+                    }
+                    .let { expectedHits ->
+                        expectedHits * WoundCalculator.woundingHits(
+                            strength = attackProfile.strength,
+                            toughness = defensiveProfile.toughness
+                        )
+                    }
+                    .let { expectedWounds ->
+                        expectedWounds * SaveCalculator.failedSaves(
+                            AP = attackProfile.AP,
                             save = defensiveProfile.armourSave,
-                            invuln = defensiveProfile.invulnSave)
-                }
-                .let { expectedSuccessfulAttacks ->
-                    AttackResult(
+                            invuln = defensiveProfile.invulnSave
+                        )
+                    }
+                    .let { expectedSuccessfulAttacks ->
+                        AttackResult(
+                            name = attackProfile.attackName,
                             expectedHits = expectedSuccessfulAttacks,
-                            damage = offensiveProfile.damage,
-                            expectedKills = expectedSuccessfulAttacks.toInt() / numHitsRequiredToKill,
-                            targetName = defensiveProfile.name
-                    )
-                }
+                            damagePerHit = attackProfile.damage
+                        )
+                    }
+            }.let { attackResults ->
+                KillsCalculator.getOffensiveResult(defensiveProfile, attackResults)
+            }
     }
 }
