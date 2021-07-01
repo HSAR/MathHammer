@@ -19,8 +19,7 @@ internal class MathHammerTest {
     fun `test running a simulation`() {
         MathHammer(
                 attackers = objectMapper.readValue<List<AttackerDTO>>(getResourcePath("data/attackers/hellblasters.json").readText()),
-                defenders = objectMapper.readValue<List<DefenderDTO>>(getResourcePath("data/defenders/skorpekhs.json").readText()),
-                numSimulations = 10
+                defenders = objectMapper.readValue<List<DefenderDTO>>(getResourcePath("data/defenders/skorpekhs.json").readText())
         )
                 .runSimulation()
                 .let { result ->

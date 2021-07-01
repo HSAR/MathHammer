@@ -5,5 +5,5 @@ data class DefenderDTO(
         val toughness: Int,
         val wounds: Int,
         val armourSave: Int,
-        val invulnSave: Int? // not always present
+        val invulnSave: Int = 7 // not always present
 )

@@ -22,34 +22,16 @@ class SimulateCombat : Command("math-hammer") {
     @Parameter(names = arrayOf("--defender", "--defenders"), description = "Path to an input file describing unit profile(s) defending", required = true)
     private var defenderFilePath = ""
 
-    @Parameter(names = arrayOf("--simulations", "--times"), description = "How many times to run the simulation (default: 10)", required = false)
-    private var numRuns = 10
-
     override fun run() {
         // Run the number of simulations requested
-        (1..numRuns)
-                .map { runNumber ->
-                    println("===== SIMULATION STARTING (#${runNumber.toString().padStart(3, '0')}) =====")
-                    // Create World and CombatSimulation instances, then initiate combat
-                    MathHammer(
-                            // Read and parse input files
-                            attackers = objectMapper.readValue<List<AttackerDTO>>(attackerFilePath),
-                            defenders = objectMapper.readValue<List<DefenderDTO>>(attackerFilePath),
-                            numSimulations = numRuns
-                    )
-                            .runSimulation()
-                            .also { result ->
-                                println("===== SIMULATION RESULTS (#${runNumber.toString().padStart(3, '0')}) =====")
-                                println(objectWriter.writeValueAsString(result))
-                                println("===== SIMULATION COMPLETE (#${runNumber.toString().padStart(3, '0')}) =====")
-                            }
-                }
-                .let { results ->
-                    // Process results for summarised digest
-                    println("===== ALL SIMULATIONS COMPLETE ($numRuns) =====")
-                    println("===== SUMMARY STARTS =====")
-                    println(results)
-                    println("===== SUMMARY ENDS =====")
+        MathHammer(
+                // Read and parse input files
+                attackers = objectMapper.readValue<List<AttackerDTO>>(attackerFilePath),
+                defenders = objectMapper.readValue<List<DefenderDTO>>(attackerFilePath)
+        )
+                .runSimulation()
+                .also { result ->
+                    println(objectWriter.writeValueAsString(result))
                 }
     }
 
