@@ -26,17 +26,15 @@ class SimulateCombat : Command("math-hammer") {
     private var numRuns = 10
 
     override fun run() {
-        // Read and parse input files
-        val attackers = objectMapper.readValue<List<AttackerDTO>>(attackerFilePath)
-        val defenders = objectMapper.readValue<List<DefenderDTO>>(attackerFilePath)
         // Run the number of simulations requested
         (1..numRuns)
                 .map { runNumber ->
                     println("===== SIMULATION STARTING (#${runNumber.toString().padStart(3, '0')}) =====")
                     // Create World and CombatSimulation instances, then initiate combat
                     MathHammer(
-                            attackers = attackers,
-                            defenders = defenders,
+                            // Read and parse input files
+                            attackers = objectMapper.readValue<List<AttackerDTO>>(attackerFilePath),
+                            defenders = objectMapper.readValue<List<DefenderDTO>>(attackerFilePath),
                             numSimulations = numRuns
                     )
                             .runSimulation()

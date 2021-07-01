@@ -7,5 +7,5 @@ data class AttackerDTO(
         val BS: Int,
         val userStrength: Int,
         val attacks: Int,
-        val weapons: WeaponDTO
+        val weapons: List<WeaponDTO>
 )

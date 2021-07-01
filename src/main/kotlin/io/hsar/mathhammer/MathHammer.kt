@@ -20,6 +20,6 @@ class MathHammer(
     }
 }
 
-class Result(
+data class Result(
         val offensiveProfileToDamageDone: Map<OffensiveProfile, Double>
 )
