@@ -1,4 +1,4 @@
-# Warhammer 40K Weapon Effectiveness Comparator "MathHammer"
+# Warhammer 40K Weapon Effectiveness Calculator "MathHammer"
 
 [![CircleCI](https://circleci.com/gh/HSAR/MathHammer.svg?style=shield)](https://circleci.com/gh/HSAR/MathHammer)
 
@@ -13,4 +13,4 @@ Running the command-line interface with any valid command will output usage info
 
 TODO:
 
-##### `test-weapon`
+##### `math-hammer`
