@@ -1,0 +1,11 @@
+*.class
+
+# Package Files #
+*.war
+*.ear
+
+# Intellij Files #
+/.idea
+/out
+*.iml
+target
