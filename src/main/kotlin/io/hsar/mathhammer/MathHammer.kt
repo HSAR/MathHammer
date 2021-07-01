@@ -12,29 +12,10 @@ import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 
 
 class MathHammer(
-        val attackers: Collection<AttackerDTO>,
         val defenders: Collection<DefenderDTO>) {
 
-    fun runSimulation(): List<Pair<AttackResult, OffensiveProfile>> {
-        return attackers.map { attacker ->
-            attacker.weapons
-                    .map { weapon ->
-                        val weaponAttacks = if (weapon.weaponType == WeaponType.RAPID_FIRE) {
-                            weapon.weaponValue * 2
-                        } else {
-                            weapon.weaponValue
-                        }
-                        OffensiveProfile(
-                                name = "${attacker.name} firing ${weapon.name}",
-                                skill = attacker.BS,
-                                attacks = weaponAttacks,
-                                strength = weapon.strength,
-                                AP = weapon.AP,
-                                damage = weapon.damage
-                        )
-                    }
-        }
-                .flatten()
+    fun runSimulation(offensiveProfiles: Collection<OffensiveProfile>): List<Pair<AttackResult, OffensiveProfile>> {
+        return offensiveProfiles
                 .flatMap { offensiveProfile ->
                     // Play each offensive profile against each defensive profile
                     defenders.map { defensiveProfile ->

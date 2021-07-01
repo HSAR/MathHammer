@@ -4,6 +4,7 @@ import io.hsar.mathhammer.cli.input.WeaponDTO
 
 data class AttackerDTO(
         val name: String = "Unnamed Unit",
+        val pointsCost: Int,
         val WS: Int,
         val BS: Int,
         val userStrength: Int,

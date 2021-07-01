@@ -5,7 +5,8 @@ class AttackResult(val expectedHits: Double, val damage: Int, val expectedKills:
         get() = damage * expectedHits
 
     override fun compareTo(other: AttackResult): Int {
-        return if (this.expectedKills != other.expectedKills) {
+
+        return if (this.expectedKills == other.expectedKills) {
             this.expectedDamage.compareTo(other.expectedDamage)
         } else {
             this.expectedKills.compareTo(other.expectedKills)

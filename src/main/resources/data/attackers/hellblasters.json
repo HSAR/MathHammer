@@ -1,6 +1,7 @@
 [
   {
     "name": "Primaris Hellblaster",
+    "pointsCost": 33,
     "WS": 3,
     "BS": 3,
     "userStrength": 4,
@@ -23,7 +24,7 @@
         "damage": 1
       },
       {
-        "name": "Plasma Incinerator",
+        "name": "Heavy Plasma Incinerator",
         "weaponType": "HEAVY",
         "weaponValue": 1,
         "strength": 8,

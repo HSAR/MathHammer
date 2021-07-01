@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.MathHammer
+import io.hsar.mathhammer.cli.input.WeaponType
+import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.wh40k.combatsimulator.cli.input.AttackerDTO
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import java.io.File
@@ -20,33 +22,42 @@ abstract class Command(val name: String) {
 
 class SimulateCombat : Command("math-hammer") {
 
+    enum class ComparisonMode { DIRECT, NORMALISED }
+
     @Parameter(names = arrayOf("--attacker", "--attackers"), description = "Path to an input file describing unit profile(s) attacking", required = true)
     private var attackerFilePath = ""
 
     @Parameter(names = arrayOf("--defender", "--defenders"), description = "Path to an input file describing unit profile(s) defending", required = true)
     private var defenderFilePath = ""
 
+    @Parameter(names = arrayOf("--mode"), description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 100pts of each attacking profile", required = false)
+    private var mode = ComparisonMode.DIRECT
+
     override fun run() {
-        // Run the number of simulations requested
-        MathHammer(
-                // Read and parse input files
-                attackers = objectMapper.readValue<List<AttackerDTO>>(File(attackerFilePath).readText()),
-                defenders = objectMapper.readValue<List<DefenderDTO>>(File(defenderFilePath).readText())
-        )
-                .runSimulation()
-                .map { (attackResults, offensiveProfile) ->
-                    "${offensiveProfile.name} expects ${attackResults.expectedKills} kills against ${attackResults.targetName}: ${attackResults.expectedDamage} damage."
+        // Generate offensive profiles according to the mode requested
+        objectMapper.readValue<List<AttackerDTO>>(File(attackerFilePath).readText())
+                .let { attackerDTOs ->
+                    generateOffensiveProfiles(attackerDTOs, mode)
                 }
-                .also { result ->
-                    println(objectWriter.writeValueAsString(result))
+                .let { offensiveProfiles ->
+                    MathHammer(
+                            defenders = objectMapper.readValue<List<DefenderDTO>>(File(defenderFilePath).readText())
+                    )
+                            .runSimulation(
+                                    offensiveProfiles
+                            )
+                            .map { (attackResults, offensiveProfile) ->
+                                "${offensiveProfile.name} expect ${attackResults.expectedKills} kills against ${attackResults.targetName}: ${String.format("%.3f", attackResults.expectedDamage)} damage."
+                            }
+                            .also { result ->
+                                println(objectWriter.writeValueAsString(result))
+                            }
                 }
     }
 
-    private fun List<Int>.average() = this.sum() / this.count().toDouble()
-
-    private fun Double.toPercentage() = this * 100
-
     companion object {
+        val NORMALISED_POINTS = 100.0
+
         private val objectMapper = jacksonObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .enable(SerializationFeature.INDENT_OUTPUT)
@@ -54,6 +65,34 @@ class SimulateCombat : Command("math-hammer") {
                 DefaultPrettyPrinter()
                         .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
         )
+
+        fun generateOffensiveProfiles(attackers: List<AttackerDTO>, mode: ComparisonMode): List<OffensiveProfile> {
+            return attackers
+                    .map { attacker ->
+                        attacker.weapons
+                                .map { weapon ->
+                                    val modelsFiring: Double = when (mode) {
+                                        ComparisonMode.DIRECT -> 1.0 // TODO: Use default unit size
+                                        ComparisonMode.NORMALISED -> NORMALISED_POINTS / attacker.pointsCost
+                                    }
+
+                                    val weaponAttacks = if (weapon.weaponType == WeaponType.RAPID_FIRE) {
+                                        weapon.weaponValue * 2
+                                    } else {
+                                        weapon.weaponValue
+                                    }
+                                    OffensiveProfile(
+                                            name = "${String.format("%.2f", modelsFiring)} ${attacker.name}s firing ${weapon.name}",
+                                            skill = attacker.BS,
+                                            attacks = weaponAttacks * modelsFiring,
+                                            strength = weapon.strength,
+                                            AP = weapon.AP,
+                                            damage = weapon.damage
+                                    )
+                                }
+                    }
+                    .flatten()
+        }
 
     }
 }

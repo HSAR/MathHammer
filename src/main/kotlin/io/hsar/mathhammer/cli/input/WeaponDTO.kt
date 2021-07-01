@@ -2,6 +2,7 @@ package io.hsar.mathhammer.cli.input
 
 data class WeaponDTO(
     val name: String,
+    val weaponExtraCost: Int = 0,
     val weaponType: WeaponType,
     val weaponValue: Int,
     val strength: Int,
