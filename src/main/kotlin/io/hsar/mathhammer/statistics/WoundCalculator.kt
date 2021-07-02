@@ -11,7 +11,7 @@ object WoundCalculator {
             else -> throw IllegalStateException("Should be impossible to reach here")
         }
                 .let { toWoundTarget ->
-                    toWoundTarget / 6.0
+                    DiceProbability.averageChanceToPass(6, toWoundTarget)
                 }
     }
 }

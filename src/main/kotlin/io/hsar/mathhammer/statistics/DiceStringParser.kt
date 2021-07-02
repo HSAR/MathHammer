@@ -1,6 +1,6 @@
 package io.hsar.mathhammer.statistics
 
-object DiceStringCalculator {
+object DiceStringParser {
     fun expectedValue(diceString: String): Double {
         return diceString
             .split("d") // remove dice character

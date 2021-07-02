@@ -30,13 +30,13 @@ class MathHammer(
         return offensiveProfile.weaponsAttacking
                 .map { attackProfile ->
                     offensiveProfile
-                            .let { (_, skill, modelsFiring) ->
+                            .let { (_, modelsFiring) ->
                                 (modelsFiring * attackProfile.attackNumber)
                                         .let { shotsFired ->
                                             if (attackProfile.abilities.contains(Ability.FLAMER)) {
                                                 shotsFired // flamers auto-hit
                                             } else {
-                                                HitCalculator.hits(skill, shotsFired)
+                                                HitCalculator.hits(attackProfile.skill, shotsFired)
                                             }
                                         }
                             }

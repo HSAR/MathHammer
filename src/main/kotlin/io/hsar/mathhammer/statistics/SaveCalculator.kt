@@ -9,12 +9,12 @@ object SaveCalculator {
                                 if (saveToUse >= 7) {
                                     0.0 // no chance to save if the target is 7 on a rolling d6
                                 } else {
-                                    saveToUse / 6.0
+                                    DiceProbability.averageChanceToPass(6, saveToUse)
                                 }
                             }
                 }
                 .let { chanceToSave ->
-                    1.0 - chanceToSave
+                    1.0 - chanceToSave // saves work the reverse of hitting and wounding - a successful save is bad
                 }
     }
 }
