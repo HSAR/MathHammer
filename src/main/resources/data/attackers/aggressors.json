@@ -39,7 +39,7 @@
         {
           "name": "Flamestorm Gauntlet",
           "weaponType": "ASSAULT",
-          "weaponValue": "d6",
+          "weaponValue": "2d6",
           "strength": 4,
           "AP": 0,
           "damage": 1,
