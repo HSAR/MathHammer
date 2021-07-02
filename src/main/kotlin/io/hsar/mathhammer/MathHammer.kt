@@ -1,6 +1,5 @@
 package io.hsar.mathhammer
 
-import io.hsar.mathhammer.cli.input.Ability
 import io.hsar.mathhammer.cli.input.Ability.*
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.OffensiveProfile
@@ -32,6 +31,15 @@ class MathHammer(
             .map { attackProfile ->
                 offensiveProfile
                     .let { (_, modelsFiring) ->
+                        attackProfile.abilities
+                            .map { ability ->
+                                when (ability) {
+                                    DOUBLE_ATTACKS -> attackProfile.attackNumber // bonus number of attacks is the same as base
+                                    EXTRA_ATTACK -> 1 // see chainswords etc
+                                    SHOCK_ASSAULT -> 1 // extra attack on the charge
+                                    else -> 0
+                                }
+                            }
                         when {
                             attackProfile.abilities.contains(DOUBLE_ATTACKS) -> {
                                 attackProfile.attackNumber * 2

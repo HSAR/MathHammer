@@ -23,6 +23,7 @@ enum class WeaponType {
 enum class Ability {
     FLAMER,
     BLAST,
+    SHOCK_ASSAULT,
     EXTRA_ATTACK,
     DOUBLE_ATTACKS
 }

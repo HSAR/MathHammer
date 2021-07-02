@@ -19,10 +19,15 @@
         {
           "name": "Chainsword",
           "weaponType": "MELEE",
-          "weaponValue": 1, // all attacks made with chainswords
+          "weaponValue": 1,
+          // all attacks made with chainswords
           "strength": "user",
           "AP": -1,
-          "damage": 1
+          "damage": 1,
+          "abilities": [
+            "SHOCK_ASSAULT",
+            "EXTRA_ATTACK"
+          ]
         }
       ],
       [
@@ -40,7 +45,11 @@
           "weaponValue": 0.8,
           "strength": "user",
           "AP": -1,
-          "damage": 1
+          "damage": 1,
+          "abilities": [
+            "SHOCK_ASSAULT",
+            "EXTRA_ATTACK"
+          ]
         },
         {
           "name": "Power Sword",
@@ -49,7 +58,10 @@
           "weaponValue": 0.2,
           "strength": "+1",
           "AP": -3,
-          "damage": 1
+          "damage": 1,
+          "abilities": [
+            "SHOCK_ASSAULT"
+          ]
         }
       ],
       [
@@ -67,7 +79,11 @@
           "weaponValue": 0.8,
           "strength": "user",
           "AP": -1,
-          "damage": 1
+          "damage": 1,
+          "abilities": [
+            "SHOCK_ASSAULT",
+            "EXTRA_ATTACK"
+          ]
         },
         {
           "name": "Power Fist",
@@ -77,7 +93,10 @@
           "hitModifier": -1,
           "strength": "x2",
           "AP": -3,
-          "damage": 2
+          "damage": 2,
+          "abilities": [
+            "SHOCK_ASSAULT"
+          ]
         }
       ],
       [
@@ -95,7 +114,11 @@
           "weaponValue": 0.8,
           "strength": "user",
           "AP": -1,
-          "damage": 1
+          "damage": 1,
+          "abilities": [
+            "SHOCK_ASSAULT",
+            "EXTRA_ATTACK"
+          ]
         },
         {
           "name": "Thunder Hammer",
@@ -105,7 +128,10 @@
           "hitModifier": -1,
           "strength": "x2",
           "AP": -2,
-          "damage": 3
+          "damage": 3,
+          "abilities": [
+            "SHOCK_ASSAULT"
+          ]
         }
       ]
     ]

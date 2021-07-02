@@ -10,7 +10,8 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.MathHammer
-import io.hsar.mathhammer.cli.input.WeaponType.*
+import io.hsar.mathhammer.cli.input.WeaponType.MELEE
+import io.hsar.mathhammer.cli.input.WeaponType.RAPID_FIRE
 import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.statistics.DiceStringParser
@@ -90,7 +91,7 @@ class SimulateCombat : Command("math-hammer") {
     }
 
     companion object {
-        val NORMALISED_POINTS = 100.0
+        val NORMALISED_POINTS = 1000.0
 
         private val objectMapper = jacksonObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
