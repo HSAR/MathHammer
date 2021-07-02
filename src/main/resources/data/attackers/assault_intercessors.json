@@ -44,8 +44,9 @@
         },
         {
           "name": "Power Sword",
+          "pointsExtra": 1,
           "weaponType": "MELEE",
-          "weaponValue": 0.8,
+          "weaponValue": 0.2,
           "strength": "+1",
           "AP": -3,
           "damage": 1
@@ -70,12 +71,41 @@
         },
         {
           "name": "Power Fist",
+          "pointsExtra": 2,
           "weaponType": "MELEE",
-          "weaponValue": 0.8,
+          "weaponValue": 0.2,
           "hitModifier": -1,
           "strength": "x2",
           "AP": -3,
           "damage": 2
+        }
+      ],
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 1,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Chainsword",
+          "weaponType": "MELEE",
+          "weaponValue": 0.8,
+          "strength": "user",
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Thunder Hammer",
+          "pointsExtra": 4,
+          "weaponType": "MELEE",
+          "weaponValue": 0.2,
+          "hitModifier": -1,
+          "strength": "x2",
+          "AP": -2,
+          "damage": 3
         }
       ]
     ]
