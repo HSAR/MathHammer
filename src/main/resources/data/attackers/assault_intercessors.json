@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Assault Intercessor",
+    "pointsCost": 19,
+    "WS": 3,
+    "BS": 3,
+    "userStrength": 4,
+    "attacks": 2.2,
+    "weapons": [
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 1,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Chainsword",
+          "weaponType": "MELEE",
+          "weaponValue": 1, // all attacks made with chainswords
+          "strength": "user",
+          "AP": -1,
+          "damage": 1
+        }
+      ],
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 1,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Chainsword",
+          "weaponType": "MELEE",
+          "weaponValue": 0.8,
+          "strength": "user",
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Power Sword",
+          "weaponType": "MELEE",
+          "weaponValue": 0.8,
+          "strength": "+1",
+          "AP": -3,
+          "damage": 1
+        }
+      ],
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 1,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Chainsword",
+          "weaponType": "MELEE",
+          "weaponValue": 0.8,
+          "strength": "user",
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Power Fist",
+          "weaponType": "MELEE",
+          "weaponValue": 0.8,
+          "hitModifier": -1,
+          "strength": "x2",
+          "AP": -3,
+          "damage": 2
+        }
+      ]
+    ]
+  }
+]

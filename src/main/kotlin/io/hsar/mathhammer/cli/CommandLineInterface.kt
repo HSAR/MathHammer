@@ -2,6 +2,7 @@ package io.hsar.wh40k.combatsimulator.cli
 
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -93,6 +94,7 @@ class SimulateCombat : Command("math-hammer") {
 
         private val objectMapper = jacksonObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .enable(JsonParser.Feature.ALLOW_COMMENTS)
                 .enable(SerializationFeature.INDENT_OUTPUT)
         private val objectWriter = objectMapper.writer(
                 DefaultPrettyPrinter()
@@ -106,7 +108,7 @@ class SimulateCombat : Command("math-hammer") {
                                 .map { weaponProfiles ->
                                     val attackProfiles = weaponProfiles.map { weapon ->
                                         val weaponAttacks = when (weapon.weaponType) {
-                                            MELEE -> attacker.attacks.toDouble() // TODO: Melee weapons with +1 attack, etc.
+                                            MELEE -> attacker.attacks.toDouble() * weapon.weaponValue.toDouble()
                                             RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
                                             else -> weapon.weaponValue.toDoubleOrNull()
                                                     ?: DiceStringParser.expectedValue(weapon.weaponValue)
@@ -114,6 +116,8 @@ class SimulateCombat : Command("math-hammer") {
                                         val weaponSkill = when (weapon.weaponType) {
                                             MELEE -> attacker.WS
                                             else -> attacker.BS
+                                        }.let { baseSkill ->
+                                               baseSkill - weapon.hitModifier
                                         }
                                         val weaponStrength = when (weapon.weaponType) {
                                             MELEE -> when (weapon.strength.lowercase()) {
@@ -121,7 +125,7 @@ class SimulateCombat : Command("math-hammer") {
                                                 "+3" -> attacker.userStrength + 3
                                                 "+2" -> attacker.userStrength + 2
                                                 "+1" -> attacker.userStrength + 1
-                                                "+0" -> attacker.userStrength
+                                                "+0", "user" -> attacker.userStrength
                                                 else -> attacker.userStrength + weapon.strength.toInt()
                                             }
                                             else -> weapon.strength.toInt()

@@ -29,7 +29,7 @@
         {
           "name": "Auto Boltstorm Gauntlet (melee)",
           "weaponType": "MELEE",
-          "weaponValue": 0,
+          "hitModifier": -1,
           "strength": "x2",
           "AP": -3,
           "damage": 2
@@ -48,7 +48,7 @@
         {
           "name": "Flamestorm Gauntlet (melee)",
           "weaponType": "MELEE",
-          "weaponValue": 0,
+          "hitModifier": -1,
           "strength": "x2",
           "AP": -3,
           "damage": 2

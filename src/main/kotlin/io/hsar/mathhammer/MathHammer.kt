@@ -1,6 +1,7 @@
 package io.hsar.mathhammer
 
 import io.hsar.mathhammer.cli.input.Ability
+import io.hsar.mathhammer.cli.input.Ability.*
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.model.OffensiveResult
@@ -31,12 +32,25 @@ class MathHammer(
                 .map { attackProfile ->
                     offensiveProfile
                             .let { (_, modelsFiring) ->
-                                (modelsFiring * attackProfile.attackNumber)
+                                when {
+                                    attackProfile.abilities.contains(DOUBLE_ATTACKS) -> {
+                                        attackProfile.attackNumber * 2
+                                    }
+                                    attackProfile.abilities.contains(EXTRA_ATTACK) -> {
+                                        attackProfile.attackNumber + 1
+                                    }
+                                    else -> {
+                                        attackProfile.attackNumber
+                                    }
+                                }
+                                        .let { attacksPerModel ->
+                                            modelsFiring * attackProfile.attackNumber
+                                        }
                                         .let { shotsFired ->
-                                            if (attackProfile.abilities.contains(Ability.FLAMER)) {
+                                            if (attackProfile.abilities.contains(FLAMER)) {
                                                 shotsFired // flamers auto-hit
                                             } else {
-                                                HitCalculator.hits(attackProfile.skill, shotsFired)
+                                                shotsFired * HitCalculator.hits(attackProfile.skill)
                                             }
                                         }
                             }

@@ -5,7 +5,7 @@ data class WeaponDTO(
     val hitModifier: Int = 0,
     val pointsExtra: Int = 0,
     val weaponType: WeaponType,
-    val weaponValue: String,
+    val weaponValue: String = "1",
     val strength: String,
     val AP: Int,
     val damage: String,
@@ -22,5 +22,7 @@ enum class WeaponType {
 
 enum class Ability {
     FLAMER,
-    BLAST
+    BLAST,
+    EXTRA_ATTACK,
+    DOUBLE_ATTACKS
 }
