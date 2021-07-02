@@ -3,7 +3,7 @@ package io.hsar.mathhammer.statistics
 object DiceStringCalculator {
     fun expectedValue(diceString: String): Double {
         return diceString
-            .split("d", "") // remove dice character
+            .split("d") // remove dice character
             .let { (numberOfDice, diceValue) ->
                 val numDice = if (numberOfDice.isNullOrEmpty()) {
                     1
