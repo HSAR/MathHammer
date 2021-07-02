@@ -3,14 +3,17 @@ package io.hsar.mathhammer.statistics
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.OffensiveResult
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
-import java.lang.IllegalStateException
 
 object KillsCalculator {
     fun getOffensiveResult(defensiveProfile: DefenderDTO, attackResults: List<AttackResult>): OffensiveResult {
-        val damagingHits = attackResults.flatMap { eachAttackResult ->
-            (1..eachAttackResult.expectedHits.toInt()).map { eachAttackResult.damagePerHit } + // whole attacks cause full damage
-                    listOf(eachAttackResult.expectedHits % 1) // partial attacks cause partial damage
-        }
+        val damagingHits = attackResults
+                .flatMap { eachAttackResult ->
+                    ((1..eachAttackResult.expectedHits.toInt()).map { 1.0 } + // whole attacks cause full damage
+                            listOf(eachAttackResult.expectedHits % 1)) // partial attacks cause partial damage
+                            .map { eachHit ->
+                                eachHit * eachAttackResult.damagePerHit // scale by damage
+                            }
+                }
 
         var currentKills = 0
         var currentDamagePool = 0.0
@@ -24,8 +27,9 @@ object KillsCalculator {
         }
 
         return OffensiveResult(
-            expectedDamage = damagingHits.sum(),
-            expectedKills = currentKills
+                expectedDamage = damagingHits.sum(),
+                expectedKills = currentKills,
+                attackResults = attackResults
         )
     }
 }

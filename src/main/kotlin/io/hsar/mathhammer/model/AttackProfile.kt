@@ -3,9 +3,9 @@ package io.hsar.mathhammer.model
 import io.hsar.mathhammer.cli.input.Ability
 
 data class AttackProfile(
-    val attackName: String,
-    val attacks: Double,
-    val strength: Int,
-    val AP: Int,
-    val damage: Double,
-    val abilities: List<Ability> = emptyList())
+        val attackName: String,
+        val attackNumber: Double,
+        val strength: Int,
+        val AP: Int,
+        val damage: Double,
+        val abilities: List<Ability> = emptyList())

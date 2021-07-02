@@ -60,18 +60,21 @@ class SimulateCombat : Command("math-hammer") {
                     .runSimulation(
                         offensiveProfiles
                     )
-                    .map { (attackResults, offensiveProfile) ->
-                        val weaponNames = offensiveProfile.weaponsAttacking.map { it.attackName }
+                    .map { (offensiveResult, offensiveProfile) ->
+                        val weaponNames = offensiveResult.attackResults.map { "${String.format(
+                                "%.2f",
+                                it.expectedHits
+                        )} ${it.name}"  }
                         """${
                             String.format(
                                 "%.2f",
                                 offensiveProfile.modelsFiring
                             )
                         } ${offensiveProfile.firingUnitName}s attacking with $weaponNames:
-                           Expecting ${attackResults.expectedKills} kills with ${
+                           Expecting ${offensiveResult.expectedKills} kills with ${
                             String.format(
                                 "%.3f",
-                                attackResults.expectedDamage
+                                offensiveResult.expectedDamage
                             )
                         } damage."""
                     }
@@ -118,7 +121,7 @@ class SimulateCombat : Command("math-hammer") {
 
                                 AttackProfile(
                                     attackName = weapon.name,
-                                    attacks = weaponAttacks,
+                                    attackNumber = weaponAttacks,
                                     strength = weaponStrength,
                                     AP = weapon.AP,
                                     damage = weaponDamage,

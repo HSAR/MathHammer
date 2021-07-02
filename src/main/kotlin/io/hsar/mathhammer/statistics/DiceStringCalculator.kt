@@ -5,7 +5,7 @@ object DiceStringCalculator {
         return diceString
             .split("d") // remove dice character
             .let { (numberOfDice, diceValue) ->
-                val numDice = if (numberOfDice.isNullOrEmpty()) {
+                val numDice = if (numberOfDice.isEmpty()) {
                     1
                 } else {
                     numberOfDice.toInt()
