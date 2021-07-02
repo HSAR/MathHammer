@@ -1,6 +1,10 @@
 package io.hsar.mathhammer
 
-import io.hsar.mathhammer.cli.input.Ability.*
+import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
+import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
+import io.hsar.mathhammer.cli.input.Ability.FLAMER
+import io.hsar.mathhammer.cli.input.Ability.MORTAL_WOUND_ON_6
+import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.model.OffensiveResult
@@ -28,7 +32,7 @@ class MathHammer(
 
     fun apply(offensiveProfile: OffensiveProfile, defensiveProfile: DefenderDTO): OffensiveResult {
         return offensiveProfile.weaponsAttacking
-            .map { attackProfile ->
+            .flatMap { attackProfile ->
                 offensiveProfile
                     .let { (_, modelsFiring) ->
                         attackProfile.abilities
@@ -82,9 +86,23 @@ class MathHammer(
                             damagePerHit = attackProfile.damage
                         )
                     }
+                    .let { mainAttackResult ->
+                        listOf(mainAttackResult) +
+                                if (attackProfile.abilities.contains(MORTAL_WOUND_ON_6)) {
+                                    listOf(
+                                        AttackResult(
+                                            name = "${attackProfile.attackName} (Mortal Wounds)",
+                                            expectedHits = attackProfile.attackNumber / 6.0,
+                                            damagePerHit = 1.0
+                                        )
+                                    )
+                                } else {
+                                    emptyList<AttackResult>()
+                                }
+                    }
             }.let { attackResults ->
                 return OffensiveResult(
-                    expectedDamage = attackResults.map { it.expectedHits * it.damagePerHit }.sum(),
+                    expectedDamage = attackResults.sumOf { it.expectedHits * it.damagePerHit },
                     expectedKills = KillsCalculator.getKills(defensiveProfile.wounds, attackResults),
                     attackResults = attackResults
                 )

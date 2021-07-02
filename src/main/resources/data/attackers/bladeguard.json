@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Bladeguard Veteran",
+    "pointsCost": 35,
+    "WS": 3,
+    "BS": 3,
+    "userStrength": 4,
+    "attacks": 3.33,
+    "weapons": [
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 1,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Master-Crafted Power Sword",
+          "weaponType": "MELEE",
+          "strength": "+1",
+          "AP": -3,
+          "damage": 2,
+          "abilities": [
+            "SHOCK_ASSAULT"
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 0.66,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Neo-Volkite Pistol",
+          "pointsExtra": 1.667,
+          "weaponType": "PISTOL",
+          "weaponValue": 0.66,
+          "strength": 5,
+          "AP": 0,
+          "damage": 2,
+          "abilities": [
+            "MORTAL_WOUND_ON_6"
+          ]
+        },
+        {
+          "name": "Master-Crafted Power Sword",
+          "weaponType": "MELEE",
+          "strength": "+1",
+          "AP": -3,
+          "damage": 2,
+          "abilities": [
+            "SHOCK_ASSAULT"
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Heavy Bolt Pistol",
+          "weaponType": "PISTOL",
+          "weaponValue": 0.66,
+          "strength": 4,
+          "AP": -1,
+          "damage": 1
+        },
+        {
+          "name": "Plasma Pistol",
+          "pointsExtra": 1.667,
+          "weaponType": "PISTOL",
+          "weaponValue": 0.33,
+          "strength": 7,
+          "AP": -3,
+          "damage": 1
+        },
+        {
+          "name": "Master-Crafted Power Sword",
+          "weaponType": "MELEE",
+          "strength": "+1",
+          "AP": -3,
+          "damage": 2,
+          "abilities": [
+            "SHOCK_ASSAULT"
+          ]
+        }
+      ]
+    ]
+  }
+]
