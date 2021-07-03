@@ -158,6 +158,7 @@ class SimulateCombat : Command("math-hammer") {
                                     attackProfile to additionalPoints
                                 }
                             }.map { attackProfilesToAdditionalPoints ->
+                                // Each attack profile may cost additional points (e.g. power swords cost 5 extra), sum all costs from attack profiles with the base cost to finalise costs
                                 val totalExtraPoints = attackProfilesToAdditionalPoints.map { (_, pointsCost) -> pointsCost }.sum()
                                 val attackProfiles = attackProfilesToAdditionalPoints.map { (attackProfile, _) -> attackProfile }.toSet()
                                 AttackGroup(
@@ -188,33 +189,26 @@ class SimulateCombat : Command("math-hammer") {
                     .map { attackGroupsToNumberOfModels ->
                         attackGroupsToNumberOfModels
                             .map { (attackGroup, numberOfModels) ->
-                                // Generate initial offensive profiles
-                                OffensiveProfile(
-                                    firingModelName = attackGroup.modelName,
-                                    modelsFiring = numberOfModels.toDouble(),
-                                    weaponsAttacking = attackGroup
-                                )
-                            }
-                    }.map { unitOffensiveProfiles ->
-                        unitOffensiveProfiles.map { offensiveProfile -> offensiveProfile.modelsFiring * offensiveProfile.weaponsAttacking.pointsCost }.sum()
+                                attackGroup.pointsCost * numberOfModels
+                            }.sum()
                             .let { totalPointsCost ->
-                                totalPointsCost to when (mode) {
+                                when (mode) {
                                     ComparisonMode.DIRECT -> 1.0
                                     ComparisonMode.NORMALISED -> NORMALISED_POINTS / totalPointsCost
+                                }.let { scaleFactor ->
+                                    totalPointsCost to attackGroupsToNumberOfModels.map { (attackGroup, numberOfModels) ->
+                                        OffensiveProfile(
+                                            firingModelName = attackGroup.modelName,
+                                            modelsFiring = numberOfModels * scaleFactor,
+                                            weaponsAttacking = attackGroup
+                                        )
+                                    }
                                 }
                             }
-                            .let { (totalPointsCost, scaleFactor) ->
-                                totalPointsCost to unitOffensiveProfiles.map { baseOffensiveProfile ->
-                                    OffensiveProfile( // TODO: Do this all in one pass rather than re-created objects
-                                        firingModelName = baseOffensiveProfile.firingModelName,
-                                        modelsFiring = baseOffensiveProfile.modelsFiring * scaleFactor,
-                                        weaponsAttacking = baseOffensiveProfile.weaponsAttacking
-                                    )
-                                }
-                            }.let { (totalPointsCost, scaledUnitOffensiveProfiles) ->
+                            .let { (totalPointsCost, scaledUnitOffensiveProfiles) ->
                                 UnitProfile(
                                     unitName = unit.name,
-                                    totalPointsCost = totalPointsCost, // TODO: Is this necessary?
+                                    totalPointsCost = totalPointsCost.toDouble(), // TODO: Is this necessary?
                                     offensiveProfiles = scaledUnitOffensiveProfiles
                                 )
                             }
