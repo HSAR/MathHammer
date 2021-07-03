@@ -1,4 +1,6 @@
 # Things to Do
 
+* Restore points normalisation
+* Update pass on all data files
+* Correct unit kill expectation (see TODO in `UnitResult`)
 * Weapon auxiliary effects - dakka, assault doctrine, etc.
-* Models with different numbers of attacks (e.g. sergeants) using a specific weapon

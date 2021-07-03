@@ -11,12 +11,16 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.MathHammer
+import io.hsar.mathhammer.cli.input.UnitDTO
 import io.hsar.mathhammer.cli.input.WeaponType.MELEE
 import io.hsar.mathhammer.cli.input.WeaponType.RAPID_FIRE
+import io.hsar.mathhammer.model.AttackGroup
 import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.model.OffensiveProfile
+import io.hsar.mathhammer.model.UnitProfile
+import io.hsar.mathhammer.model.UnitResult
 import io.hsar.mathhammer.statistics.DiceStringParser
-import io.hsar.wh40k.combatsimulator.cli.input.AttackerDTO
+import io.hsar.mathhammer.util.cartesianProduct
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import java.io.File
 import kotlin.system.exitProcess
@@ -56,10 +60,10 @@ class SimulateCombat : Command("math-hammer") {
         // Generate offensive profiles according to the mode requested
         attackerFilePaths
             .flatMap { attackerFilePath ->
-                objectMapper.readValue<List<AttackerDTO>>(attackerFilePath.readText())
+                objectMapper.readValue<List<UnitDTO>>(attackerFilePath.readText())
             }
             .let { attackerDTOs ->
-                generateOffensiveProfiles(attackerDTOs, mode)
+                generateUnitOffensives(attackerDTOs, mode)
             }
             .let { offensiveProfiles ->
                 MathHammer(
@@ -71,29 +75,35 @@ class SimulateCombat : Command("math-hammer") {
                     .runSimulation(
                         offensiveProfiles
                     )
-                    .map { (offensiveResult, offensiveProfile) ->
-                        val weaponNames = offensiveResult.attackResults.map {
-                            "${
-                                String.format(
-                                    "%.2f",
-                                    it.expectedHits
-                                )
-                            } ${it.name}"
+                    .map { (unitResult, unitOffensive) ->
+                        val scaleFactor = when (mode) {
+                            ComparisonMode.DIRECT -> 1.0
+                            ComparisonMode.NORMALISED -> NORMALISED_POINTS / unitOffensive.totalPointsCost.toDouble() // TODO: pointsCost normalisation
                         }
-                        """${
-                            String.format(
-                                "%.2f",
-                                offensiveProfile.modelsFiring
-                            )
-                        } ${offensiveProfile.firingUnitName}s attacking with $weaponNames:
-                           Expecting ${offensiveResult.expectedKills} kills with ${
-                            String.format(
-                                "%.3f",
-                                offensiveResult.expectedDamage
-                            )
-                        } damage."""
+
+                        scaleResults(unitResult, scaleFactor) to unitOffensive
                     }
-                    .forEach() { result ->
+                    .map { (unitResult, unitProfile) ->
+                        unitResult.offensivesToResults.map { (offensiveProfile, offensiveResult) ->
+                            val weapons = offensiveResult.attackResults.map {
+                                "${
+                                    String.format(
+                                        "%.2f",
+                                        it.expectedHits
+                                    )
+                                } ${it.name}"
+                            }
+
+                            "${String.format("%.2f", offensiveProfile.modelsFiring.toDouble())} ${offensiveProfile.firingModelName}s making $weapons hits"
+                        }.let { attackProfiles ->
+                            val unitName = unitProfile.unitName
+                            """
+                                $unitName $attackProfiles: 
+                                Expecting ${unitResult.expectedKills} kills with ${String.format("%.3f", unitResult.expectedDamage)} damage.
+                            """.trimIndent()
+                        }
+                    }
+                    .forEach { result ->
                         println(result)
                     }
             }
@@ -111,65 +121,101 @@ class SimulateCombat : Command("math-hammer") {
                 .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
         )
 
-        fun generateOffensiveProfiles(attackers: List<AttackerDTO>, mode: ComparisonMode): List<OffensiveProfile> {
-            return attackers
-                .map { attacker ->
-                    attacker.weapons
-                        .map { weaponProfiles ->
-                            val attackProfiles = weaponProfiles.map { weapon ->
-                                val weaponAttacks = when (weapon.weaponType) {
-                                    MELEE -> attacker.attacks.toDouble() * weapon.weaponValue.toDouble()
-                                    RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
-                                    else -> weapon.weaponValue.toDoubleOrNull()
-                                        ?: DiceStringParser.expectedValue(weapon.weaponValue)
-                                }
-                                val weaponSkill = when (weapon.weaponType) {
-                                    MELEE -> attacker.WS
-                                    else -> attacker.BS
-                                }.let { baseSkill ->
-                                    baseSkill - weapon.hitModifier
-                                }
-                                val weaponStrength = when (weapon.weaponType) {
-                                    MELEE -> when (weapon.strength.lowercase()) {
-                                        "x2" -> attacker.userStrength * 2
-                                        "+3" -> attacker.userStrength + 3
-                                        "+2" -> attacker.userStrength + 2
-                                        "+1" -> attacker.userStrength + 1
-                                        "+0", "user" -> attacker.userStrength
-                                        else -> attacker.userStrength + weapon.strength.toInt()
+        fun generateUnitOffensives(units: List<UnitDTO>, mode: ComparisonMode): List<UnitProfile> {
+            return units.flatMap { unit ->
+                unit.attackerComposition()
+                    .map { (attacker, numberOfModels) ->
+                        attacker.attackGroups
+                            .map { attackGroup ->
+                                attackGroup.map { weapon ->
+                                    val weaponAttacks = when (weapon.weaponType) {
+                                        MELEE -> attacker.attacks.toDouble() * weapon.weaponValue.toDouble()
+                                        RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
+                                        else -> weapon.weaponValue.toDoubleOrNull()
+                                            ?: DiceStringParser.expectedValue(weapon.weaponValue)
                                     }
-                                    else -> weapon.strength.toInt()
+                                    val weaponSkill = when (weapon.weaponType) {
+                                        MELEE -> attacker.WS
+                                        else -> attacker.BS
+                                    }.let { baseSkill ->
+                                        baseSkill - weapon.hitModifier
+                                    }
+                                    val weaponStrength = when (weapon.weaponType) {
+                                        MELEE -> when (weapon.strength.lowercase()) {
+                                            "x2" -> attacker.userStrength * 2
+                                            "+3" -> attacker.userStrength + 3
+                                            "+2" -> attacker.userStrength + 2
+                                            "+1" -> attacker.userStrength + 1
+                                            "+0", "user" -> attacker.userStrength
+                                            else -> attacker.userStrength + weapon.strength.toInt()
+                                        }
+                                        else -> weapon.strength.toInt()
+                                    }
+                                    val weaponDamage = weapon.damage.toDoubleOrNull()
+                                        ?: DiceStringParser.expectedValue(weapon.damage)
+
+                                    AttackProfile(
+                                        attackName = weapon.name,
+                                        attackNumber = weaponAttacks,
+                                        skill = weaponSkill,
+                                        strength = weaponStrength,
+                                        AP = weapon.AP,
+                                        damage = weaponDamage,
+                                        abilities = weapon.abilities
+                                    ) to weapon.pointsExtra
+                                }.map { (attackProfile, additionalPoints) ->
+                                    attackProfile to additionalPoints
                                 }
-                                val weaponDamage = weapon.damage.toDoubleOrNull()
-                                    ?: DiceStringParser.expectedValue(weapon.damage)
+                            }.map { attackProfilesToAdditionalPoints ->
+                                val totalExtraPoints = attackProfilesToAdditionalPoints.map { (_, pointsCost) -> pointsCost }.sum()
+                                val attackProfiles = attackProfilesToAdditionalPoints.map { (attackProfile, _) -> attackProfile }.toSet()
+                                AttackGroup(
+                                    modelName = unit.getAttackerName(attacker),
+                                    pointsCost = (attacker.pointsCost + totalExtraPoints),
+                                    attackProfiles = attackProfiles
+                                ) to numberOfModels
+                            }.toSet()
+                    }
+                    .let { modelAttackGroupsToTimesUsed ->
+                        if (modelAttackGroupsToTimesUsed.size == 1) {
+                            modelAttackGroupsToTimesUsed
+                        } else {
+                            if (modelAttackGroupsToTimesUsed.size == 2) {
+                                modelAttackGroupsToTimesUsed.let { (first, second) ->
+                                    cartesianProduct(first, second)
+                                }
+                            } else {
+                                val firstTwoAttackGroupsToAttacksWithGroup = modelAttackGroupsToTimesUsed.take(2)
+                                val remainingAttackGroupsToAttacksWithGroup = modelAttackGroupsToTimesUsed - firstTwoAttackGroupsToAttacksWithGroup
 
-                                AttackProfile(
-                                    attackName = weapon.name,
-                                    attackNumber = weaponAttacks,
-                                    skill = weaponSkill,
-                                    strength = weaponStrength,
-                                    AP = weapon.AP,
-                                    damage = weaponDamage,
-                                    abilities = weapon.abilities
-                                )
+                                firstTwoAttackGroupsToAttacksWithGroup.let { (first, second) ->
+                                    cartesianProduct(first, second, *remainingAttackGroupsToAttacksWithGroup.toTypedArray())
+                                }
                             }
-
-                            val modelsFiring: Double = when (mode) {
-                                ComparisonMode.DIRECT -> 1.0 // TODO: Use default unit size
-                                ComparisonMode.NORMALISED -> NORMALISED_POINTS / (attacker.pointsCost + weaponProfiles.map { it.pointsExtra }
-                                    .sum())
-                            }
-
+                        }
+                    }
+                    .map { attackGroupsToNumberOfModels ->
+                        attackGroupsToNumberOfModels.map { (attackGroup, timesExecuted) ->
                             OffensiveProfile(
-                                firingUnitName = attacker.name,
-                                modelsFiring = modelsFiring,
-                                weaponsAttacking = attackProfiles
+                                firingModelName = attackGroup.modelName,
+                                modelsFiring = timesExecuted,
+                                weaponsAttacking = attackGroup
                             )
                         }
-                }
-                .flatten()
+                    }.map { unitOffensiveProfiles ->
+                        UnitProfile(
+                            unitName = unit.name,
+                            totalPointsCost = unitOffensiveProfiles.map { it.weaponsAttacking.pointsCost }.sum(),
+                            offensiveProfiles = unitOffensiveProfiles
+                        )
+                    }
+            }
+
         }
 
+        fun scaleResults(offensiveResult: UnitResult, scaleFactor: Double): UnitResult {
+            return offensiveResult // TODO: Implement this
+        }
     }
 }
 

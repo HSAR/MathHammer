@@ -1,139 +1,138 @@
 [
   {
-    "name": "Assault Intercessor",
-    "pointsCost": 19,
-    "WS": 3,
-    "BS": 3,
-    "userStrength": 4,
-    "attacks": 2.2,
-    "weapons": [
-      [
-        {
-          "name": "Heavy Bolt Pistol",
-          "weaponType": "PISTOL",
-          "weaponValue": 1,
-          "strength": 4,
-          "AP": -1,
-          "damage": 1
-        },
-        {
-          "name": "Chainsword",
-          "weaponType": "MELEE",
-          "weaponValue": 1,
-          // all attacks made with chainswords
-          "strength": "user",
-          "AP": -1,
-          "damage": 1,
-          "abilities": [
-            "SHOCK_ASSAULT",
-            "EXTRA_ATTACK"
+    "name": "Assault Intercessor Squad",
+    "unitComposition": {
+      "Assault Intercessor": 4,
+      "Assault Intercessor Sergeant": 1
+    },
+    "models": {
+      "Assault Intercessor": {
+        "name": "Assault Intercessor",
+        "pointsCost": 19,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 4,
+        "attacks": 2,
+        "attackGroups": [
+          [
+            {
+              "name": "Heavy Bolt Pistol",
+              "weaponType": "PISTOL",
+              "weaponValue": 1,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Chainsword",
+              "weaponType": "MELEE",
+              "strength": "user",
+              "AP": -1,
+              "damage": 1,
+              "abilities": [
+                "SHOCK_ASSAULT",
+                "EXTRA_ATTACK"
+              ]
+            }
           ]
-        }
-      ],
-      [
-        {
-          "name": "Heavy Bolt Pistol",
-          "weaponType": "PISTOL",
-          "weaponValue": 1,
-          "strength": 4,
-          "AP": -1,
-          "damage": 1
-        },
-        {
-          "name": "Chainsword",
-          "weaponType": "MELEE",
-          "weaponValue": 0.8,
-          "strength": "user",
-          "AP": -1,
-          "damage": 1,
-          "abilities": [
-            "SHOCK_ASSAULT",
-            "EXTRA_ATTACK"
+        ]
+      },
+      "Assault Intercessor Sergeant": {
+        "name": "Assault Intercessor Sergeant",
+        "pointsCost": 19,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 4,
+        "attacks": 3,
+        "attackGroups": [
+          [
+            {
+              "name": "Heavy Bolt Pistol",
+              "weaponType": "PISTOL",
+              "weaponValue": 1,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Chainsword",
+              "weaponType": "MELEE",
+              "strength": "user",
+              "AP": -1,
+              "damage": 1,
+              "abilities": [
+                "SHOCK_ASSAULT",
+                "EXTRA_ATTACK"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "Heavy Bolt Pistol",
+              "weaponType": "PISTOL",
+              "weaponValue": 1,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Power Sword",
+              "pointsExtra": 5,
+              "weaponType": "MELEE",
+              "strength": "+1",
+              "AP": -3,
+              "damage": 1,
+              "abilities": [
+                "SHOCK_ASSAULT"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "Heavy Bolt Pistol",
+              "weaponType": "PISTOL",
+              "weaponValue": 1,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Power Fist",
+              "pointsExtra": 10,
+              "weaponType": "MELEE",
+              "hitModifier": -1,
+              "strength": "x2",
+              "AP": -3,
+              "damage": 2,
+              "abilities": [
+                "SHOCK_ASSAULT"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "Heavy Bolt Pistol",
+              "weaponType": "PISTOL",
+              "weaponValue": 1,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Thunder Hammer",
+              "pointsExtra": 20,
+              "weaponType": "MELEE",
+              "hitModifier": -1,
+              "strength": "x2",
+              "AP": -2,
+              "damage": 3,
+              "abilities": [
+                "SHOCK_ASSAULT"
+              ]
+            }
           ]
-        },
-        {
-          "name": "Power Sword",
-          "pointsExtra": 1,
-          "weaponType": "MELEE",
-          "weaponValue": 0.2,
-          "strength": "+1",
-          "AP": -3,
-          "damage": 1,
-          "abilities": [
-            "SHOCK_ASSAULT"
-          ]
-        }
-      ],
-      [
-        {
-          "name": "Heavy Bolt Pistol",
-          "weaponType": "PISTOL",
-          "weaponValue": 1,
-          "strength": 4,
-          "AP": -1,
-          "damage": 1
-        },
-        {
-          "name": "Chainsword",
-          "weaponType": "MELEE",
-          "weaponValue": 0.8,
-          "strength": "user",
-          "AP": -1,
-          "damage": 1,
-          "abilities": [
-            "SHOCK_ASSAULT",
-            "EXTRA_ATTACK"
-          ]
-        },
-        {
-          "name": "Power Fist",
-          "pointsExtra": 2,
-          "weaponType": "MELEE",
-          "weaponValue": 0.2,
-          "hitModifier": -1,
-          "strength": "x2",
-          "AP": -3,
-          "damage": 2,
-          "abilities": [
-            "SHOCK_ASSAULT"
-          ]
-        }
-      ],
-      [
-        {
-          "name": "Heavy Bolt Pistol",
-          "weaponType": "PISTOL",
-          "weaponValue": 1,
-          "strength": 4,
-          "AP": -1,
-          "damage": 1
-        },
-        {
-          "name": "Chainsword",
-          "weaponType": "MELEE",
-          "weaponValue": 0.8,
-          "strength": "user",
-          "AP": -1,
-          "damage": 1,
-          "abilities": [
-            "SHOCK_ASSAULT",
-            "EXTRA_ATTACK"
-          ]
-        },
-        {
-          "name": "Thunder Hammer",
-          "pointsExtra": 4,
-          "weaponType": "MELEE",
-          "weaponValue": 0.2,
-          "hitModifier": -1,
-          "strength": "x2",
-          "AP": -2,
-          "damage": 3,
-          "abilities": [
-            "SHOCK_ASSAULT"
-          ]
-        }
-      ]
-    ]
+        ]
+      }
+    }
   }
 ]
