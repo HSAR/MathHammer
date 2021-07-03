@@ -18,7 +18,6 @@ import io.hsar.mathhammer.model.AttackGroup
 import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.model.UnitProfile
-import io.hsar.mathhammer.model.UnitResult
 import io.hsar.mathhammer.statistics.DiceStringParser
 import io.hsar.mathhammer.util.cartesianProduct
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
@@ -75,14 +74,6 @@ class SimulateCombat : Command("math-hammer") {
                     .runSimulation(
                         offensiveProfiles
                     )
-                    .map { (unitResult, unitOffensive) ->
-                        val scaleFactor = when (mode) {
-                            ComparisonMode.DIRECT -> 1.0
-                            ComparisonMode.NORMALISED -> NORMALISED_POINTS / unitOffensive.totalPointsCost.toDouble() // TODO: pointsCost normalisation
-                        }
-
-                        scaleResults(unitResult, scaleFactor) to unitOffensive
-                    }
                     .map { (unitResult, unitProfile) ->
                         unitResult.offensivesToResults.map { (offensiveProfile, offensiveResult) ->
                             val weapons = offensiveResult.attackResults.map {
@@ -94,7 +85,7 @@ class SimulateCombat : Command("math-hammer") {
                                 } ${it.name}"
                             }
 
-                            "${String.format("%.2f", offensiveProfile.modelsFiring.toDouble())} ${offensiveProfile.firingModelName}s making $weapons hits"
+                            "${String.format("%.2f", offensiveProfile.modelsFiring)} ${offensiveProfile.firingModelName}s making $weapons hits"
                         }.let { attackProfiles ->
                             val unitName = unitProfile.unitName
                             """
@@ -195,26 +186,40 @@ class SimulateCombat : Command("math-hammer") {
                         }
                     }
                     .map { attackGroupsToNumberOfModels ->
-                        attackGroupsToNumberOfModels.map { (attackGroup, timesExecuted) ->
-                            OffensiveProfile(
-                                firingModelName = attackGroup.modelName,
-                                modelsFiring = timesExecuted,
-                                weaponsAttacking = attackGroup
-                            )
-                        }
+                        attackGroupsToNumberOfModels
+                            .map { (attackGroup, numberOfModels) ->
+                                // Generate initial offensive profiles
+                                OffensiveProfile(
+                                    firingModelName = attackGroup.modelName,
+                                    modelsFiring = numberOfModels.toDouble(),
+                                    weaponsAttacking = attackGroup
+                                )
+                            }
                     }.map { unitOffensiveProfiles ->
-                        UnitProfile(
-                            unitName = unit.name,
-                            totalPointsCost = unitOffensiveProfiles.map { it.weaponsAttacking.pointsCost }.sum(),
-                            offensiveProfiles = unitOffensiveProfiles
-                        )
+                        unitOffensiveProfiles.map { offensiveProfile -> offensiveProfile.modelsFiring * offensiveProfile.weaponsAttacking.pointsCost }.sum()
+                            .let { totalPointsCost ->
+                                totalPointsCost to when (mode) {
+                                    ComparisonMode.DIRECT -> 1.0
+                                    ComparisonMode.NORMALISED -> NORMALISED_POINTS / totalPointsCost
+                                }
+                            }
+                            .let { (totalPointsCost, scaleFactor) ->
+                                totalPointsCost to unitOffensiveProfiles.map { baseOffensiveProfile ->
+                                    OffensiveProfile( // TODO: Do this all in one pass rather than re-created objects
+                                        firingModelName = baseOffensiveProfile.firingModelName,
+                                        modelsFiring = baseOffensiveProfile.modelsFiring * scaleFactor,
+                                        weaponsAttacking = baseOffensiveProfile.weaponsAttacking
+                                    )
+                                }
+                            }.let { (totalPointsCost, scaledUnitOffensiveProfiles) ->
+                                UnitProfile(
+                                    unitName = unit.name,
+                                    totalPointsCost = totalPointsCost, // TODO: Is this necessary?
+                                    offensiveProfiles = scaledUnitOffensiveProfiles
+                                )
+                            }
                     }
             }
-
-        }
-
-        fun scaleResults(offensiveResult: UnitResult, scaleFactor: Double): UnitResult {
-            return offensiveResult // TODO: Implement this
         }
     }
 }

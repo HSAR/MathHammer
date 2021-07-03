@@ -102,7 +102,7 @@ class MathHammer(
                             }
                     }.let { attackResults ->
                         eachOffensiveProfile to OffensiveResult(
-                            attacksMade = 100.0, // FIXME
+                            attacksMade = eachOffensiveProfile.modelsFiring,
                             expectedDamage = attackResults.sumOf { it.expectedHits * it.damagePerHit },
                             expectedKills = KillsCalculator.getKills(defensiveProfile.wounds, attackResults),
                             attackResults = attackResults

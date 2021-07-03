@@ -5,6 +5,6 @@ package io.hsar.mathhammer.model
  */
 data class UnitProfile(
     val unitName: String,
-    val totalPointsCost: Int,
+    val totalPointsCost: Double,
     val offensiveProfiles: List<OffensiveProfile>
 )

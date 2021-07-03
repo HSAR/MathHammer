@@ -5,6 +5,6 @@ package io.hsar.mathhammer.model
  */
 data class OffensiveProfile(
         val firingModelName: String,
-        val modelsFiring: Int,
+        val modelsFiring: Double,
         val weaponsAttacking: AttackGroup
 )
