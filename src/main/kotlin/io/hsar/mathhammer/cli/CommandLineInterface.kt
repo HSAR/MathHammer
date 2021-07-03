@@ -14,7 +14,8 @@ import io.hsar.mathhammer.MathHammer
 import io.hsar.mathhammer.cli.input.UnitDTO
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.model.UnitProfile
-import io.hsar.mathhammer.util.cartesianProduct
+import io.hsar.mathhammer.util.createCrossProduct
+import io.hsar.mathhammer.util.intersection
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import io.hsar.wh40k.combatsimulator.utils.sum
 import java.io.File
@@ -111,41 +112,46 @@ class SimulateCombat : Command("math-hammer") {
         fun generateUnitOffensives(units: List<UnitDTO>, mode: ComparisonMode): List<UnitProfile> {
             return units.flatMap { unit ->
                 // Convert DTOs into necessary objects
-                val attackGroupNamesToAttackGroupsAndModelCount = unit.attackerComposition()
-                    .mapKeys { (attackerTypeDTO, modelCount) -> attackerTypeDTO.createAttackProfiles(unit.getAttackerName(attackerTypeDTO)) }
-                    .map { (attackGroups, modelCount) ->
-                        attackGroups.mapValues { (_, attackGroup) -> mapOf(attackGroup to modelCount) }
-                    }.sum()
+                val modelNameAndAttackGroupNameToAttackGroup = unit.models.map { (modelName, attackerTypeDTO) ->
+                    attackerTypeDTO.createAttackProfiles(unit.getAttackerName(attackerTypeDTO))
+                        .map { (attackGroupName, attackGroup) -> (modelName to attackGroupName) to attackGroup }.toMap()
+                }.sum()
 
                 unit.attackerComposition()
                     .let { attackerComposition ->
                         // Generate combinations of attack group names we will compare against each other
-                        unit.models.values.map { it.attackGroups.keys }.let { attackGroupKeys ->
+                        unit.models.map { (modelName, attackerTypeDTO) ->
+                            attackerTypeDTO.attackGroups.keys
+                                .map { eachKey -> modelName to eachKey }.toSet()
+                        }.let { attackGroupsForCrossProduct ->
 
-                            if (attackGroupKeys.size == 1) {
-                                setOf(attackGroupKeys.first()) // reformat into correct structure
-                            } else {
-                                if (attackGroupKeys.size == 2) {
-                                    attackGroupKeys.let { (first, second) ->
-                                        cartesianProduct(first, second)
-                                    }
-                                } else {
-                                    val firstTwoAttackGroupKeys = attackGroupKeys.take(2)
-                                    val remainingAttackGroupKeys = attackGroupKeys - firstTwoAttackGroupKeys
+                            val naiveCrossProduct = createCrossProduct(attackGroupsForCrossProduct)
 
-                                    firstTwoAttackGroupKeys.let { (first, second) ->
-                                        cartesianProduct(first, second, *remainingAttackGroupKeys.toTypedArray())
-                                    }
-                                }.map { it.toSet() }
-                            }
+                            val illegalCombinations = unit.models.map { (modelName, attackerTypeDTO) ->
+                                modelName to attackerTypeDTO.attackGroups.keys
+                            }.toMap()
+                                .intersection() // Don't ask
+                                .map { (modelName, setOfAttackGroupNames) ->
+                                    setOfAttackGroupNames.map { attackGroupName -> modelName to attackGroupName }
+                                        .toSet()
+                                }
+                                .let { listOfSetsOfPairsOfModelNameToAttackGroupName ->
+                                    createCrossProduct(listOfSetsOfPairsOfModelNameToAttackGroupName)
+                                }
+                                .filter { listOfPairsOfModelNameToAttackGroupName ->
+                                    listOfPairsOfModelNameToAttackGroupName.toMap().values.toSet().size != 1
+                                }
+
+                            naiveCrossProduct - illegalCombinations
                         }
                     }
                     .map { attackGroupNamesInSimulation ->
                         val attackGroupsToNumberOfModels = attackGroupNamesInSimulation
-                            .flatMap { attackGroupName ->
-                                attackGroupNamesToAttackGroupsAndModelCount.getOrElse(attackGroupName) { throw IllegalStateException("Could not find attack group with name: $attackGroupName") }
-                                    .toList()
-                            }
+                            .map { modelNameToAttackGroupName ->
+                                modelNameAndAttackGroupNameToAttackGroup
+                                    .getOrElse(modelNameToAttackGroupName) { throw IllegalStateException("Could not find : $modelNameToAttackGroupName") } to
+                                        unit.unitComposition.getOrElse(modelNameToAttackGroupName.first) { throw IllegalStateException("Could not find : $modelNameToAttackGroupName") }
+                            }.toMap()
 
                         attackGroupsToNumberOfModels
                             .map { (attackGroup, numberOfModels) ->
@@ -172,12 +178,12 @@ class SimulateCombat : Command("math-hammer") {
                                     offensiveProfiles = scaledUnitOffensiveProfiles
                                 )
                             }
+                    }
 
-                    }
-                    .map { attackGroupsToNumberOfModels ->
-                        attackGroupsToNumberOfModels
-                    }
             }
+                .map { attackGroupsToNumberOfModels ->
+                    attackGroupsToNumberOfModels
+                }
         }
     }
 }
