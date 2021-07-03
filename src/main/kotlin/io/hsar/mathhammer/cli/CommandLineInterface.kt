@@ -114,9 +114,8 @@ class SimulateCombat : Command("math-hammer") {
                 val attackGroupNamesToAttackGroupsAndModelCount = unit.attackerComposition()
                     .mapKeys { (attackerTypeDTO, modelCount) -> attackerTypeDTO.createAttackProfiles(unit.getAttackerName(attackerTypeDTO)) }
                     .map { (attackGroups, modelCount) ->
-                        attackGroups.mapValues { (_, attackGroup) -> attackGroup to modelCount }
+                        attackGroups.mapValues { (_, attackGroup) -> mapOf(attackGroup to modelCount) }
                     }.sum()
-
 
                 unit.attackerComposition()
                     .let { attackerComposition ->
@@ -124,7 +123,7 @@ class SimulateCombat : Command("math-hammer") {
                         unit.models.values.map { it.attackGroups.keys }.let { attackGroupKeys ->
 
                             if (attackGroupKeys.size == 1) {
-                                setOf(attackGroupKeys.first().toList()) // reformat into correct structure
+                                setOf(attackGroupKeys.first()) // reformat into correct structure
                             } else {
                                 if (attackGroupKeys.size == 2) {
                                     attackGroupKeys.let { (first, second) ->
@@ -137,15 +136,16 @@ class SimulateCombat : Command("math-hammer") {
                                     firstTwoAttackGroupKeys.let { (first, second) ->
                                         cartesianProduct(first, second, *remainingAttackGroupKeys.toTypedArray())
                                     }
-                                }
+                                }.map { it.toSet() }
                             }
                         }
                     }
                     .map { attackGroupNamesInSimulation ->
                         val attackGroupsToNumberOfModels = attackGroupNamesInSimulation
-                            .map { attackGroupName ->
+                            .flatMap { attackGroupName ->
                                 attackGroupNamesToAttackGroupsAndModelCount.getOrElse(attackGroupName) { throw IllegalStateException("Could not find attack group with name: $attackGroupName") }
-                            }.toMap()
+                                    .toList()
+                            }
 
                         attackGroupsToNumberOfModels
                             .map { (attackGroup, numberOfModels) ->
