@@ -7,7 +7,6 @@
     },
     "models": {
       "Assault Intercessor": {
-        "name": "Assault Intercessor",
         "pointsCost": 19,
         "WS": 3,
         "BS": 3,
@@ -38,7 +37,6 @@
         ]
       },
       "Assault Intercessor Sergeant": {
-        "name": "Assault Intercessor Sergeant",
         "pointsCost": 19,
         "WS": 3,
         "BS": 3,

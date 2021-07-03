@@ -3,7 +3,6 @@ package io.hsar.wh40k.combatsimulator.cli.input
 import io.hsar.mathhammer.cli.input.WeaponDTO
 
 data class AttackerTypeDTO(
-    val name: String,
     val pointsCost: Int,
     val WS: Int,
     val BS: Int,
