@@ -75,14 +75,14 @@ class SimulateCombat : Command("math-hammer") {
                         offensiveProfiles
                     )
                     .map { (unitResult, unitProfile) ->
-                        unitResult.offensivesToResults.map { (offensiveProfile, offensiveResult) ->
-                            val weapons = offensiveResult.attackResults.map {
+                        unitResult.offensivesToResults.map { (offensiveProfile, offensiveResults) ->
+                            val weapons = offensiveResults.map { attackResult ->
                                 "${
                                     String.format(
                                         "%.2f",
-                                        it.expectedHits
+                                        attackResult.expectedHits
                                     )
-                                } ${it.name}"
+                                } ${attackResult.name}"
                             }
 
                             "${String.format("%.2f", offensiveProfile.modelsFiring)} ${offensiveProfile.firingModelName}s making $weapons hits"

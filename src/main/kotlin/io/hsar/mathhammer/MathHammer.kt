@@ -6,7 +6,6 @@ import io.hsar.mathhammer.cli.input.Ability.FLAMER
 import io.hsar.mathhammer.cli.input.Ability.MORTAL_WOUND_ON_6
 import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
 import io.hsar.mathhammer.model.AttackResult
-import io.hsar.mathhammer.model.OffensiveResult
 import io.hsar.mathhammer.model.UnitProfile
 import io.hsar.mathhammer.model.UnitResult
 import io.hsar.mathhammer.statistics.HitCalculator
@@ -87,7 +86,7 @@ class MathHammer(
                                 )
                             }
                             .let { mainAttackResult ->
-                                listOf(mainAttackResult) +
+                                (listOf(mainAttackResult) +
                                         if (attackProfile.abilities.contains(MORTAL_WOUND_ON_6)) {
                                             listOf(
                                                 AttackResult(
@@ -97,23 +96,24 @@ class MathHammer(
                                                 )
                                             )
                                         } else {
-                                            emptyList()
-                                        }
+                                            listOf(null)
+                                        }).filterNotNull()
                             }
                     }.let { attackResults ->
-                        eachOffensiveProfile to OffensiveResult(
-                            attacksMade = eachOffensiveProfile.modelsFiring,
-                            expectedDamage = attackResults.sumOf { it.expectedHits * it.damagePerHit },
-                            expectedKills = KillsCalculator.getKills(defensiveProfile.wounds, attackResults),
-                            attackResults = attackResults
-                        )
+                        eachOffensiveProfile to attackResults
                     }
             }
             .toMap()
             .let { offensivesToResults ->
+                val expectedDamage = offensivesToResults.flatMap { (_, attackResults) ->
+                    attackResults.map { it.expectedHits * it.damagePerHit }
+                }.sum()
+                val allAttackResults = offensivesToResults.values.flatten()
                 UnitResult(
                     unitName = unitProfile.unitName,
                     pointsCost = unitProfile.totalPointsCost,
+                    expectedDamage = expectedDamage,
+                    expectedKills = KillsCalculator.getKills(defensiveProfile.wounds, allAttackResults),
                     offensivesToResults = offensivesToResults
                 )
             }
