@@ -1,59 +1,131 @@
 [
   {
-    "name": "Aggressor",
-    "pointsCost": 40,
-    "WS": 3,
-    "BS": 3,
-    "userStrength": 4,
-    "attacks": 3.33,
-    "weapons": [
-      [
-        {
-        "name": "Auto Boltstorm Gauntlet",
-        "weaponType": "ASSAULT",
-        "weaponValue": 6,
-        "strength": 4,
-        "AP": 0,
-        "damage": 1
-        },
-        {
-          "name": "Fragstorm Grenade Launcher",
-          "pointsExtra": 5,
-          "weaponType": "ASSAULT",
-          "weaponValue": "d6",
-          "strength": 4,
-          "AP": 0,
-          "damage": 1,
-          "abilities": [ "BLAST" ]
-        },
-        {
-          "name": "Auto Boltstorm Gauntlet (melee)",
-          "weaponType": "MELEE",
-          "hitModifier": -1,
-          "strength": "x2",
-          "AP": -3,
-          "damage": 2
+    "name": "Aggressor Squad",
+    "unitComposition": {
+      "Aggressor": 2,
+      "Aggressor Sergeant": 1
+    },
+    "models": {
+      "Aggressor": {
+        "pointsCost": 40,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 4,
+        "attacks": 3,
+        "attackGroups": {
+          "Auto Boltstorm Gauntlet and Fragstorm grenade launcher": [
+            {
+              "name": "Auto Boltstorm Gauntlet",
+              "weaponType": "ASSAULT",
+              "weaponValue": 6,
+              "strength": 4,
+              "AP": 0,
+              "damage": 1
+            },
+            {
+              "name": "Fragstorm Grenade Launcher",
+              "pointsExtra": 5,
+              "weaponType": "ASSAULT",
+              "weaponValue": "d6",
+              "strength": 4,
+              "AP": 0,
+              "damage": 1,
+              "abilities": [
+                "BLAST"
+              ]
+            },
+            {
+              "name": "Auto Boltstorm Gauntlet (melee)",
+              "weaponType": "MELEE",
+              "hitModifier": -1,
+              "strength": "x2",
+              "AP": -3,
+              "damage": 2
+            }
+          ],
+          "Flamestorm Gauntlet": [
+            {
+              "name": "Flamestorm Gauntlet",
+              "weaponType": "ASSAULT",
+              "weaponValue": "2d6",
+              "strength": 4,
+              "AP": 0,
+              "damage": 1,
+              "abilities": [
+                "FLAMER"
+              ]
+            },
+            {
+              "name": "Flamestorm Gauntlet (melee)",
+              "weaponType": "MELEE",
+              "hitModifier": -1,
+              "strength": "x2",
+              "AP": -3,
+              "damage": 2
+            }
+          ]
         }
-      ],
-      [
-        {
-          "name": "Flamestorm Gauntlet",
-          "weaponType": "ASSAULT",
-          "weaponValue": "2d6",
-          "strength": 4,
-          "AP": 0,
-          "damage": 1,
-          "abilities": [ "FLAMER" ]
-        },
-        {
-          "name": "Flamestorm Gauntlet (melee)",
-          "weaponType": "MELEE",
-          "hitModifier": -1,
-          "strength": "x2",
-          "AP": -3,
-          "damage": 2
+      },
+      "Aggressor Sergeant": {
+        "pointsCost": 40,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 4,
+        "attacks": 3,
+        "attackGroups": {
+          "Auto Boltstorm Gauntlet and Fragstorm grenade launcher": [
+            {
+              "name": "Auto Boltstorm Gauntlet",
+              "weaponType": "ASSAULT",
+              "weaponValue": 6,
+              "strength": 4,
+              "AP": 0,
+              "damage": 1
+            },
+            {
+              "name": "Fragstorm Grenade Launcher",
+              "pointsExtra": 5,
+              "weaponType": "ASSAULT",
+              "weaponValue": "d6",
+              "strength": 4,
+              "AP": 0,
+              "damage": 1,
+              "abilities": [
+                "BLAST"
+              ]
+            },
+            {
+              "name": "Auto Boltstorm Gauntlet (melee)",
+              "weaponType": "MELEE",
+              "hitModifier": -1,
+              "strength": "x2",
+              "AP": -3,
+              "damage": 2
+            }
+          ],
+          "Flamestorm Gauntlet": [
+            {
+              "name": "Flamestorm Gauntlet",
+              "weaponType": "ASSAULT",
+              "weaponValue": "2d6",
+              "strength": 4,
+              "AP": 0,
+              "damage": 1,
+              "abilities": [
+                "FLAMER"
+              ]
+            },
+            {
+              "name": "Flamestorm Gauntlet (melee)",
+              "weaponType": "MELEE",
+              "hitModifier": -1,
+              "strength": "x2",
+              "AP": -3,
+              "damage": 2
+            }
+          ]
         }
-      ]
-    ]
+      }
+    }
   }
 ]

@@ -12,8 +12,8 @@
         "BS": 3,
         "userStrength": 4,
         "attacks": 2,
-        "attackGroups": [
-          [
+        "attackGroups": {
+          "Heavy Bolt Pistol and Chainsword": [
             {
               "name": "Heavy Bolt Pistol",
               "weaponType": "PISTOL",
@@ -34,7 +34,7 @@
               ]
             }
           ]
-        ]
+        }
       },
       "Assault Intercessor Sergeant": {
         "pointsCost": 19,
@@ -42,8 +42,8 @@
         "BS": 3,
         "userStrength": 4,
         "attacks": 3,
-        "attackGroups": [
-          [
+        "attackGroups": {
+          "Heavy Bolt Pistol and Chainsword": [
             {
               "name": "Heavy Bolt Pistol",
               "weaponType": "PISTOL",
@@ -64,7 +64,7 @@
               ]
             }
           ],
-          [
+          "Heavy Bolt Pistol and Power Sword": [
             {
               "name": "Heavy Bolt Pistol",
               "weaponType": "PISTOL",
@@ -85,7 +85,7 @@
               ]
             }
           ],
-          [
+          "Heavy Bolt Pistol and Power Fist": [
             {
               "name": "Heavy Bolt Pistol",
               "weaponType": "PISTOL",
@@ -107,7 +107,7 @@
               ]
             }
           ],
-          [
+          "Heavy Bolt Pistol and Thunder Hammer": [
             {
               "name": "Heavy Bolt Pistol",
               "weaponType": "PISTOL",
@@ -129,7 +129,7 @@
               ]
             }
           ]
-        ]
+        }
       }
     }
   }

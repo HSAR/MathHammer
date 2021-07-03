@@ -12,15 +12,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.MathHammer
 import io.hsar.mathhammer.cli.input.UnitDTO
-import io.hsar.mathhammer.cli.input.WeaponType.MELEE
-import io.hsar.mathhammer.cli.input.WeaponType.RAPID_FIRE
-import io.hsar.mathhammer.model.AttackGroup
-import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.model.OffensiveProfile
 import io.hsar.mathhammer.model.UnitProfile
-import io.hsar.mathhammer.statistics.DiceStringParser
 import io.hsar.mathhammer.util.cartesianProduct
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
+import io.hsar.wh40k.combatsimulator.utils.sum
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -114,79 +110,43 @@ class SimulateCombat : Command("math-hammer") {
 
         fun generateUnitOffensives(units: List<UnitDTO>, mode: ComparisonMode): List<UnitProfile> {
             return units.flatMap { unit ->
+                // Convert DTOs into necessary objects
+                val attackGroupNamesToAttackGroupsAndModelCount = unit.attackerComposition()
+                    .mapKeys { (attackerTypeDTO, modelCount) -> attackerTypeDTO.createAttackProfiles(unit.getAttackerName(attackerTypeDTO)) }
+                    .map { (attackGroups, modelCount) ->
+                        attackGroups.mapValues { (_, attackGroup) -> attackGroup to modelCount }
+                    }.sum()
+
+
                 unit.attackerComposition()
-                    .map { (attacker, numberOfModels) ->
-                        attacker.attackGroups
-                            .map { attackGroup ->
-                                attackGroup.map { weapon ->
-                                    val weaponAttacks = when (weapon.weaponType) {
-                                        MELEE -> attacker.attacks.toDouble() * weapon.weaponValue.toDouble()
-                                        RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
-                                        else -> weapon.weaponValue.toDoubleOrNull()
-                                            ?: DiceStringParser.expectedValue(weapon.weaponValue)
-                                    }
-                                    val weaponSkill = when (weapon.weaponType) {
-                                        MELEE -> attacker.WS
-                                        else -> attacker.BS
-                                    }.let { baseSkill ->
-                                        baseSkill - weapon.hitModifier
-                                    }
-                                    val weaponStrength = when (weapon.weaponType) {
-                                        MELEE -> when (weapon.strength.lowercase()) {
-                                            "x2" -> attacker.userStrength * 2
-                                            "+3" -> attacker.userStrength + 3
-                                            "+2" -> attacker.userStrength + 2
-                                            "+1" -> attacker.userStrength + 1
-                                            "+0", "user" -> attacker.userStrength
-                                            else -> attacker.userStrength + weapon.strength.toInt()
-                                        }
-                                        else -> weapon.strength.toInt()
-                                    }
-                                    val weaponDamage = weapon.damage.toDoubleOrNull()
-                                        ?: DiceStringParser.expectedValue(weapon.damage)
+                    .let { attackerComposition ->
+                        // Generate combinations of attack group names we will compare against each other
+                        unit.models.values.map { it.attackGroups.keys }.let { attackGroupKeys ->
 
-                                    AttackProfile(
-                                        attackName = weapon.name,
-                                        attackNumber = weaponAttacks,
-                                        skill = weaponSkill,
-                                        strength = weaponStrength,
-                                        AP = weapon.AP,
-                                        damage = weaponDamage,
-                                        abilities = weapon.abilities
-                                    ) to weapon.pointsExtra
-                                }.map { (attackProfile, additionalPoints) ->
-                                    attackProfile to additionalPoints
-                                }
-                            }.map { attackProfilesToAdditionalPoints ->
-                                // Each attack profile may cost additional points (e.g. power swords cost 5 extra), sum all costs from attack profiles with the base cost to finalise costs
-                                val totalExtraPoints = attackProfilesToAdditionalPoints.map { (_, pointsCost) -> pointsCost }.sum()
-                                val attackProfiles = attackProfilesToAdditionalPoints.map { (attackProfile, _) -> attackProfile }.toSet()
-                                AttackGroup(
-                                    modelName = unit.getAttackerName(attacker),
-                                    pointsCost = (attacker.pointsCost + totalExtraPoints),
-                                    attackProfiles = attackProfiles
-                                ) to numberOfModels
-                            }.toSet()
-                    }
-                    .let { modelAttackGroupsToTimesUsed ->
-                        if (modelAttackGroupsToTimesUsed.size == 1) {
-                            modelAttackGroupsToTimesUsed
-                        } else {
-                            if (modelAttackGroupsToTimesUsed.size == 2) {
-                                modelAttackGroupsToTimesUsed.let { (first, second) ->
-                                    cartesianProduct(first, second)
-                                }
+                            if (attackGroupKeys.size == 1) {
+                                setOf(attackGroupKeys.first().toList()) // reformat into correct structure
                             } else {
-                                val firstTwoAttackGroupsToAttacksWithGroup = modelAttackGroupsToTimesUsed.take(2)
-                                val remainingAttackGroupsToAttacksWithGroup = modelAttackGroupsToTimesUsed - firstTwoAttackGroupsToAttacksWithGroup
+                                if (attackGroupKeys.size == 2) {
+                                    attackGroupKeys.let { (first, second) ->
+                                        cartesianProduct(first, second)
+                                    }
+                                } else {
+                                    val firstTwoAttackGroupKeys = attackGroupKeys.take(2)
+                                    val remainingAttackGroupKeys = attackGroupKeys - firstTwoAttackGroupKeys
 
-                                firstTwoAttackGroupsToAttacksWithGroup.let { (first, second) ->
-                                    cartesianProduct(first, second, *remainingAttackGroupsToAttacksWithGroup.toTypedArray())
+                                    firstTwoAttackGroupKeys.let { (first, second) ->
+                                        cartesianProduct(first, second, *remainingAttackGroupKeys.toTypedArray())
+                                    }
                                 }
                             }
                         }
                     }
-                    .map { attackGroupsToNumberOfModels ->
+                    .map { attackGroupNamesInSimulation ->
+                        val attackGroupsToNumberOfModels = attackGroupNamesInSimulation
+                            .map { attackGroupName ->
+                                attackGroupNamesToAttackGroupsAndModelCount.getOrElse(attackGroupName) { throw IllegalStateException("Could not find attack group with name: $attackGroupName") }
+                            }.toMap()
+
                         attackGroupsToNumberOfModels
                             .map { (attackGroup, numberOfModels) ->
                                 attackGroup.pointsCost * numberOfModels
@@ -212,6 +172,10 @@ class SimulateCombat : Command("math-hammer") {
                                     offensiveProfiles = scaledUnitOffensiveProfiles
                                 )
                             }
+
+                    }
+                    .map { attackGroupsToNumberOfModels ->
+                        attackGroupsToNumberOfModels
                     }
             }
         }
