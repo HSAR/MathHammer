@@ -31,7 +31,7 @@ class SimulateCombat : Command("math-hammer") {
 
     @Parameter(
         names = arrayOf("--attacker", "--attackers"),
-        description = "Path to an input file describing unit profile(s) attacking",
+        description = "Comma-separated list of input files or directories containing input files for unit profile(s) attacking",
         required = true,
         converter = FileConverter::class
     )
@@ -47,7 +47,7 @@ class SimulateCombat : Command("math-hammer") {
 
     @Parameter(
         names = arrayOf("--mode"),
-        description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 100pts of each attacking profile",
+        description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 1000pts of each attacking profile",
         required = false
     )
     private var mode = ComparisonMode.DIRECT
@@ -55,6 +55,13 @@ class SimulateCombat : Command("math-hammer") {
     override fun run() {
         // Generate offensive profiles according to the mode requested
         attackerFilePaths
+            .flatMap { attackerFilePath ->
+                if (attackerFilePath.isDirectory) {
+                    attackerFilePath.listFiles().toList()
+                } else {
+                    listOf(attackerFilePath)
+                }
+            }
             .flatMap { attackerFilePath ->
                 objectMapper.readValue<List<UnitDTO>>(attackerFilePath.readText())
             }

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Skorpekh Destroyers",
+    "unitComposition": {
+      "Skorpekh Destroyer (Threshers)": 2,
+      "Skorpekh Destroyer (Reap-Blade)": 1
+    },
+    "models": {
+      "Skorpekh Destroyer (Threshers)": {
+        "pointsCost": 35,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 5,
+        "attacks": 3,
+        "attackGroups": {
+          "Hyperphase Threshers": [
+            {
+              "name": "Hyperphase Threshers",
+              "weaponType": "MELEE",
+              "strength": "User",
+              "AP": -3,
+              "damage": 2,
+              "abilities": [
+                "EXTRA_ATTACK"
+              ]
+            }
+          ]
+        }
+      },
+      "Skorpekh Destroyer (Reap-Blade)": {
+        "pointsCost": 35,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 5,
+        "attacks": 3,
+        "attackGroups": {
+          "Hyperphase Reap-Blade": [
+            {
+              "name": "Hyperphase Reap-Blade",
+              "weaponType": "MELEE",
+              "strength": "+2",
+              "AP": -4,
+              "damage": 3
+            }
+          ]
+        }
+      }
+    }
+  }
+]
