@@ -114,7 +114,9 @@ class SimulateCombat : Command("math-hammer") {
                 // Convert DTOs into necessary objects
                 val modelNameAndAttackGroupNameToAttackGroup = unit.models.map { (modelName, attackerTypeDTO) ->
                     attackerTypeDTO.createAttackProfiles(unit.getAttackerName(attackerTypeDTO))
-                        .map { (attackGroupName, attackGroup) -> (modelName to attackGroupName) to attackGroup }.toMap()
+                        .map { (attackGroupName, attackGroup) ->
+                            (modelName to attackGroupName) to attackGroup
+                        }.toMap()
                 }.sum()
 
                 unit.attackerComposition()
@@ -179,7 +181,6 @@ class SimulateCombat : Command("math-hammer") {
                                 )
                             }
                     }
-
             }
                 .map { attackGroupsToNumberOfModels ->
                     attackGroupsToNumberOfModels

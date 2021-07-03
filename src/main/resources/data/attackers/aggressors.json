@@ -13,7 +13,7 @@
         "userStrength": 4,
         "attacks": 3,
         "attackGroups": {
-          "Auto Boltstorm Gauntlet and Fragstorm grenade launcher": [
+          "Auto Boltstorm Gauntlet and Fragstorm Grenade Launcher": [
             {
               "name": "Auto Boltstorm Gauntlet",
               "weaponType": "ASSAULT",
@@ -71,9 +71,9 @@
         "WS": 3,
         "BS": 3,
         "userStrength": 4,
-        "attacks": 3,
+        "attacks": 4,
         "attackGroups": {
-          "Auto Boltstorm Gauntlet and Fragstorm grenade launcher": [
+          "Auto Boltstorm Gauntlet and Fragstorm Grenade Launcher": [
             {
               "name": "Auto Boltstorm Gauntlet",
               "weaponType": "ASSAULT",
