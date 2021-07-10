@@ -26,5 +26,6 @@ enum class Ability {
     BLAST,
     SHOCK_ASSAULT,
     EXTRA_ATTACK,
-    DOUBLE_ATTACKS
+    DOUBLE_ATTACKS,
+    REROLL_1_TO_HIT
 }

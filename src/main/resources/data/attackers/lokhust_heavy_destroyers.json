@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Lokhust Heavy Destroyers",
+    "unitComposition": {
+      "Lokhust Heavy Destroyer": 1
+    },
+    "models": {
+      "Lokhust Heavy Destroyer": {
+        "pointsCost": 60,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 4,
+        "attacks": 2,
+        "attackGroups": {
+          "Enmnitic Exterminator": [
+            {
+              "name": "Enmnitic Exterminator",
+              "weaponType": "HEAVY",
+              "weaponValue": "3D3",
+              "strength": 7,
+              "AP": -1,
+              "damage": 1,
+              "abilities": [
+                "REROLL_1_TO_HIT",
+                "BLAST"
+              ]
+            }
+          ],
+          "Gauss Destructor": [
+            {
+              "name": "Gauss Destructor",
+              "weaponType": "HEAVY",
+              "weaponValue": 1,
+              "strength": 10,
+              "AP": -4,
+              "damage": "3D3",
+              "abilities": [
+                "REROLL_1_TO_HIT"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

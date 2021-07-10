@@ -4,12 +4,14 @@ import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
 import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
 import io.hsar.mathhammer.cli.input.Ability.FLAMER
 import io.hsar.mathhammer.cli.input.Ability.MORTAL_WOUND_ON_6
+import io.hsar.mathhammer.cli.input.Ability.REROLL_1_TO_HIT
 import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.UnitProfile
 import io.hsar.mathhammer.model.UnitResult
 import io.hsar.mathhammer.statistics.HitCalculator
 import io.hsar.mathhammer.statistics.KillsCalculator
+import io.hsar.mathhammer.statistics.Reroll
 import io.hsar.mathhammer.statistics.SaveCalculator
 import io.hsar.mathhammer.statistics.WoundCalculator
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
@@ -62,7 +64,11 @@ class MathHammer(
                                 if (attackProfile.abilities.contains(FLAMER)) {
                                     shotsFired // flamers auto-hit
                                 } else {
-                                    shotsFired * HitCalculator.hits(attackProfile.skill)
+                                    val rerolls = when {
+                                        attackProfile.abilities.contains(REROLL_1_TO_HIT) -> Reroll.ONES
+                                        else -> Reroll.NONE
+                                    }
+                                    shotsFired * HitCalculator.hits(attackProfile.skill, rerolls)
                                 }
                             }
                             .let { expectedHits ->

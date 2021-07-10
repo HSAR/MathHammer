@@ -12,7 +12,7 @@ fun <T> cartesianProduct(a: Set<T>, b: Set<T>, vararg sets: Set<T>): Set<List<T>
 
 fun <T> createCrossProduct(thingsToCrossProduct: Collection<Set<T>>): Set<List<T>> {
     return if (thingsToCrossProduct.size == 1) {
-        setOf(thingsToCrossProduct.first().toList()) // reformat into correct structure
+        thingsToCrossProduct.first().map { eachElement -> listOf(eachElement) }.toSet() // reformat into correct structure
     } else {
         if (thingsToCrossProduct.size == 2) {
             thingsToCrossProduct.toList().let { (first, second) ->

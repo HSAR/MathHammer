@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Bladeguard Veterans",
+    "toughness": 4,
+    "wounds": 3,
+    "armourSave": 2,
+    "invulnSave": 4
+  }
+]
