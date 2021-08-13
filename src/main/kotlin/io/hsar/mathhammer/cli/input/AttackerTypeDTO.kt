@@ -1,7 +1,12 @@
 package io.hsar.wh40k.combatsimulator.cli.input
 
+import io.hsar.mathhammer.cli.input.Ability.ASSAULT_DOCTRINE
+import io.hsar.mathhammer.cli.input.Ability.DEVASTATOR_DOCTRINE
+import io.hsar.mathhammer.cli.input.Ability.TACTICAL_DOCTRINE
 import io.hsar.mathhammer.cli.input.WeaponDTO
-import io.hsar.mathhammer.cli.input.WeaponType
+import io.hsar.mathhammer.cli.input.WeaponType.HEAVY
+import io.hsar.mathhammer.cli.input.WeaponType.MELEE
+import io.hsar.mathhammer.cli.input.WeaponType.RAPID_FIRE
 import io.hsar.mathhammer.model.AttackGroup
 import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.statistics.DiceStringParser
@@ -22,19 +27,19 @@ data class AttackerTypeDTO(
         return attackGroups.map { (attackGroupName, attackGroup) ->
             attackGroupName to attackGroup.map { weapon ->
                 val weaponAttacks = when (weapon.weaponType) {
-                    WeaponType.MELEE -> this.attacks.toDouble() * weapon.weaponValue.toDouble()
-                    WeaponType.RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
+                    MELEE -> this.attacks.toDouble() * weapon.weaponValue.toDouble()
+                    RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
                     else -> weapon.weaponValue.toDoubleOrNull()
                         ?: DiceStringParser.expectedValue(weapon.weaponValue)
                 }
                 val weaponSkill = when (weapon.weaponType) {
-                    WeaponType.MELEE -> this.WS
+                    MELEE -> this.WS
                     else -> this.BS
                 }.let { baseSkill ->
                     baseSkill - weapon.hitModifier
                 }
                 val weaponStrength = when (weapon.weaponType) {
-                    WeaponType.MELEE -> when (weapon.strength.lowercase()) {
+                    MELEE -> when (weapon.strength.lowercase()) {
                         "x2" -> this.userStrength * 2
                         "+3" -> this.userStrength + 3
                         "+2" -> this.userStrength + 2
@@ -47,12 +52,19 @@ data class AttackerTypeDTO(
                 val weaponDamage = weapon.damage.toDoubleOrNull()
                     ?: DiceStringParser.expectedValue(weapon.damage)
 
+                val weaponAP = when {
+                    weapon.abilities.contains(DEVASTATOR_DOCTRINE) && weapon.weaponType == HEAVY -> weapon.AP + 1
+                    weapon.abilities.contains(TACTICAL_DOCTRINE) && weapon.weaponType == RAPID_FIRE -> weapon.AP + 1
+                    weapon.abilities.contains(ASSAULT_DOCTRINE) && weapon.weaponType == MELEE -> weapon.AP + 1
+                    else -> weapon.AP
+                }
+
                 AttackProfile(
                     attackName = weapon.name,
                     attackNumber = weaponAttacks,
                     skill = weaponSkill,
                     strength = weaponStrength,
-                    AP = weapon.AP,
+                    AP = weaponAP,
                     damage = weaponDamage,
                     abilities = weapon.abilities
                 ) to weapon.pointsExtra
