@@ -71,7 +71,7 @@
               "AP": 0,
               "damage": 2,
               "abilities": [
-                "MORTAL_WOUND_ON_6"
+                "ON_6_TO_WOUND_MORTAL_WOUND"
               ]
             },
             {

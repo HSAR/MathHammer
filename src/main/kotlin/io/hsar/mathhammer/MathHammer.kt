@@ -4,8 +4,8 @@ import io.hsar.mathhammer.cli.input.Ability
 import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
 import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
 import io.hsar.mathhammer.cli.input.Ability.FLAMER
-import io.hsar.mathhammer.cli.input.Ability.MORTAL_WOUND_ON_6
-import io.hsar.mathhammer.cli.input.Ability.REROLL_1_TO_HIT
+import io.hsar.mathhammer.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
+import io.hsar.mathhammer.cli.input.Ability.ON_1_TO_HIT_REROLL
 import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.UnitProfile
@@ -66,14 +66,14 @@ class MathHammer(
                                     shotsFired // flamers auto-hit
                                 } else {
                                     val rerolls = when {
-                                        attackProfile.abilities.contains(REROLL_1_TO_HIT) -> Reroll.ONES
+                                        attackProfile.abilities.contains(ON_1_TO_HIT_REROLL) -> Reroll.ONES
                                         else -> Reroll.NONE
                                     }
                                     shotsFired * HitCalculator.hits(attackProfile.skill, rerolls)
                                 }
                             }
                             .let { mainAttackHits ->
-                                mainAttackHits + if (attackProfile.abilities.contains(Ability.TESLA)) {
+                                mainAttackHits + if (attackProfile.abilities.contains(Ability.ON_6_TO_HIT_TWO_EXTRA_HITS)) {
                                     // Tesla effect is "6s to hit cause 2 additional hits", which can be modelled as 33% extra hits
                                     mainAttackHits / 3.0
                                 } else {
@@ -81,38 +81,46 @@ class MathHammer(
                                 }
                             }
                             .let { expectedHits ->
-                                expectedHits * WoundCalculator.woundingHits(
+                                val expectedWoundingHits = expectedHits * WoundCalculator.woundingHits(
                                     strength = attackProfile.strength,
                                     toughness = defensiveProfile.toughness
                                 )
+
+                                val mortalWounds = if (attackProfile.abilities.contains(ON_6_TO_WOUND_MORTAL_WOUND)) {
+                                    expectedWoundingHits / 6.0
+                                } else {
+                                    0.0
+                                }
+
+                                expectedWoundingHits to mortalWounds
                             }
-                            .let { expectedWounds ->
-                                expectedWounds * SaveCalculator.failedSaves(
+                            .let { (expectedWoundingHits, mortalWounds) ->
+                                val mainAttackResult = (expectedWoundingHits * SaveCalculator.failedSaves(
                                     AP = attackProfile.AP,
                                     save = defensiveProfile.armourSave,
                                     invuln = defensiveProfile.invulnSave
-                                )
-                            }
-                            .let { expectedSuccessfulAttacks ->
-                                AttackResult(
-                                    name = attackProfile.attackName,
-                                    expectedHits = expectedSuccessfulAttacks,
-                                    damagePerHit = attackProfile.damage
-                                )
-                            }
-                            .let { mainAttackResult ->
-                                (listOf(mainAttackResult) +
-                                        if (attackProfile.abilities.contains(MORTAL_WOUND_ON_6)) {
-                                            listOf(
-                                                AttackResult(
-                                                    name = "${attackProfile.attackName} (Mortal Wounds)",
-                                                    expectedHits = attackProfile.attackNumber / 6.0,
-                                                    damagePerHit = 1.0
-                                                )
-                                            )
-                                        } else {
-                                            listOf(null)
-                                        }).filterNotNull()
+                                ))
+                                    .let { expectedSuccessfulAttacks ->
+                                        AttackResult(
+                                            name = attackProfile.attackName,
+                                            expectedHits = expectedSuccessfulAttacks,
+                                            damagePerHit = attackProfile.damage
+                                        )
+                                    }
+
+                                // Mortal wounds pass through saves
+                                val mortalWoundResult =
+                                                if (mortalWounds > 0) {
+                                                        AttackResult(
+                                                            name = "${attackProfile.attackName} (Mortal Wounds)",
+                                                            expectedHits = mortalWounds,
+                                                            damagePerHit = 1.0
+                                                        )
+                                                } else {
+                                                    null
+                                                }
+
+                                listOf(mainAttackResult, mortalWoundResult).filterNotNull()
                             }
                     }.let { attackResults ->
                         eachOffensiveProfile to attackResults

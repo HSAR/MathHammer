@@ -21,7 +21,7 @@
               "AP": -1,
               "damage": 1,
               "abilities": [
-                "REROLL_1_TO_HIT",
+                "ON_1_TO_HIT_REROLL",
                 "BLAST"
               ]
             }
@@ -35,7 +35,7 @@
               "AP": -4,
               "damage": "3D3",
               "abilities": [
-                "REROLL_1_TO_HIT"
+                "ON_1_TO_HIT_REROLL"
               ]
             }
           ]
