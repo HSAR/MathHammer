@@ -27,5 +27,6 @@ enum class Ability {
     SHOCK_ASSAULT,
     EXTRA_ATTACK,
     DOUBLE_ATTACKS,
-    REROLL_1_TO_HIT
+    REROLL_1_TO_HIT,
+    TESLA
 }

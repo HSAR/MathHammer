@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Catacomb Command Barge",
+    "unitComposition": {
+      "Catacomb Command Barge": 1
+    },
+    "models": {
+      "Catacomb Command Barge": {
+        "pointsCost": 155,
+        "WS": 2,
+        "BS": 2,
+        "userStrength": 5,
+        "attacks": 4,
+        "attackGroups": {
+          "Gauss Cannon and Staff of Light": [
+            {
+              "name": "Gauss Cannon",
+              "pointsExtra": 5,
+              "weaponType": "HEAVY",
+              "weaponValue": 3,
+              "strength": 6,
+              "AP": -3,
+              "damage": "D3"
+            },
+            {
+              "name": "Staff of Light (Shooting)",
+              "weaponType": "ASSAULT",
+              "weaponValue": 3,
+              "strength": 5,
+              "AP": -2,
+              "damage": 1
+            },
+            {
+              "name": "Staff of Light (Melee)",
+              "weaponType": "MELEE",
+              "strength": "user",
+              "AP": -2,
+              "damage": 1
+            }
+          ],
+          "Tesla Cannon and Staff of Light": [
+            {
+              "name": "Tesla Cannon",
+              "weaponType": "HEAVY",
+              "weaponValue": 3,
+              "strength": 6,
+              "AP": 0,
+              "damage": 1,
+              "abilities": [
+                "TESLA"
+              ]
+            },
+            {
+              "name": "Staff of Light (Shooting)",
+              "weaponType": "ASSAULT",
+              "weaponValue": 3,
+              "strength": 5,
+              "AP": -2,
+              "damage": 1
+            },
+            {
+              "name": "Staff of Light (Melee)",
+              "weaponType": "MELEE",
+              "strength": "user",
+              "AP": -2,
+              "damage": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+]

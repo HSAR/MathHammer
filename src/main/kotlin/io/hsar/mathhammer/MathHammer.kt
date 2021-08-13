@@ -1,5 +1,6 @@
 package io.hsar.mathhammer
 
+import io.hsar.mathhammer.cli.input.Ability
 import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
 import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
 import io.hsar.mathhammer.cli.input.Ability.FLAMER
@@ -69,6 +70,14 @@ class MathHammer(
                                         else -> Reroll.NONE
                                     }
                                     shotsFired * HitCalculator.hits(attackProfile.skill, rerolls)
+                                }
+                            }
+                            .let { mainAttackHits ->
+                                mainAttackHits + if (attackProfile.abilities.contains(Ability.TESLA)) {
+                                    // Tesla effect is "6s to hit cause 2 additional hits", which can be modelled as 33% extra hits
+                                    mainAttackHits / 3.0
+                                } else {
+                                    0.0
                                 }
                             }
                             .let { expectedHits ->
