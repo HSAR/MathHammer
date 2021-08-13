@@ -20,15 +20,3 @@ enum class WeaponType {
     PISTOL
 }
 
-enum class Ability {
-    FLAMER,
-    MORTAL_WOUND_ON_6,
-    BLAST,
-    SHOCK_ASSAULT,
-    EXTRA_ATTACK,
-    DOUBLE_ATTACKS,
-    REROLL_1_TO_HIT,
-    DEVASTATOR_DOCTRINE,
-    TACTICAL_DOCTRINE,
-    ASSAULT_DOCTRINE
-}

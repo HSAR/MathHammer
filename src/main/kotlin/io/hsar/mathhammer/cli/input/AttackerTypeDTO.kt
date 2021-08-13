@@ -1,8 +1,8 @@
 package io.hsar.wh40k.combatsimulator.cli.input
 
-import io.hsar.mathhammer.cli.input.Ability.ASSAULT_DOCTRINE
-import io.hsar.mathhammer.cli.input.Ability.DEVASTATOR_DOCTRINE
-import io.hsar.mathhammer.cli.input.Ability.TACTICAL_DOCTRINE
+import io.hsar.mathhammer.cli.input.Ability.MELEE_EXTRA_AP
+import io.hsar.mathhammer.cli.input.Ability.HEAVY_WEAPON_EXTRA_AP
+import io.hsar.mathhammer.cli.input.Ability.ASSAULT_AND_RAPID_FIRE_EXTRA_AP
 import io.hsar.mathhammer.cli.input.WeaponDTO
 import io.hsar.mathhammer.cli.input.WeaponType.HEAVY
 import io.hsar.mathhammer.cli.input.WeaponType.MELEE
@@ -53,9 +53,9 @@ data class AttackerTypeDTO(
                     ?: DiceStringParser.expectedValue(weapon.damage)
 
                 val weaponAP = when {
-                    weapon.abilities.contains(DEVASTATOR_DOCTRINE) && weapon.weaponType == HEAVY -> weapon.AP + 1
-                    weapon.abilities.contains(TACTICAL_DOCTRINE) && weapon.weaponType == RAPID_FIRE -> weapon.AP + 1
-                    weapon.abilities.contains(ASSAULT_DOCTRINE) && weapon.weaponType == MELEE -> weapon.AP + 1
+                    weapon.abilities.contains(HEAVY_WEAPON_EXTRA_AP) && weapon.weaponType == HEAVY -> weapon.AP + 1
+                    weapon.abilities.contains(ASSAULT_AND_RAPID_FIRE_EXTRA_AP) && weapon.weaponType == RAPID_FIRE -> weapon.AP + 1
+                    weapon.abilities.contains(MELEE_EXTRA_AP) && weapon.weaponType == MELEE -> weapon.AP + 1
                     else -> weapon.AP
                 }
 

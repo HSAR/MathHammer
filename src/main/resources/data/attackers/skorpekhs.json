@@ -21,7 +21,7 @@
               "AP": -3,
               "damage": 2,
               "abilities": [
-                "REROLL_1_TO_HIT",
+                "ON_1_TO_HIT_REROLL",
                 "EXTRA_ATTACK"
               ]
             }
@@ -43,7 +43,7 @@
               "AP": -4,
               "damage": 3,
               "abilities": [
-                "REROLL_1_TO_HIT"
+                "ON_1_TO_HIT_REROLL"
               ]
             }
           ]
