@@ -1,8 +1,8 @@
 package io.hsar.wh40k.combatsimulator.cli.input
 
-import io.hsar.mathhammer.cli.input.Ability.MELEE_EXTRA_AP
-import io.hsar.mathhammer.cli.input.Ability.HEAVY_WEAPON_EXTRA_AP
 import io.hsar.mathhammer.cli.input.Ability.ASSAULT_AND_RAPID_FIRE_EXTRA_AP
+import io.hsar.mathhammer.cli.input.Ability.HEAVY_WEAPON_EXTRA_AP
+import io.hsar.mathhammer.cli.input.Ability.MELEE_EXTRA_AP
 import io.hsar.mathhammer.cli.input.WeaponDTO
 import io.hsar.mathhammer.cli.input.WeaponType.HEAVY
 import io.hsar.mathhammer.cli.input.WeaponType.MELEE

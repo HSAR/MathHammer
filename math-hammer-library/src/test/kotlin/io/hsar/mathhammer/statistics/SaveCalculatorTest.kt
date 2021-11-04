@@ -1,13 +1,9 @@
 package io.hsar.mathhammer.statistics
 
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.*
-import org.hamcrest.MatcherAssert
-import org.hamcrest.MatcherAssert.*
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 internal class SaveCalculatorTest {
 

@@ -4,8 +4,8 @@ import io.hsar.mathhammer.cli.input.Ability
 import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
 import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
 import io.hsar.mathhammer.cli.input.Ability.FLAMER
-import io.hsar.mathhammer.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
 import io.hsar.mathhammer.cli.input.Ability.ON_1_TO_HIT_REROLL
+import io.hsar.mathhammer.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
 import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.UnitProfile

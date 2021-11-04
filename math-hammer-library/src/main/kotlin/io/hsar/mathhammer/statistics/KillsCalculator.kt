@@ -1,8 +1,6 @@
 package io.hsar.mathhammer.statistics
 
 import io.hsar.mathhammer.model.AttackResult
-import io.hsar.mathhammer.model.OffensiveResult
-import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 
 object KillsCalculator {
 
