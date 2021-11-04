@@ -1,6 +1,6 @@
-package io.hsar.mathhammer.model
+package io.hsar.mathhammer.fortyk.model
 
-import io.hsar.mathhammer.cli.input.Ability
+import io.hsar.mathhammer.fortyk.cli.input.Ability
 
 data class AttackProfile(
     val attackName: String,

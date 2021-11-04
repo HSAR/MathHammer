@@ -3,12 +3,13 @@ package io.hsar.mathhammer
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.hsar.mathhammer.cli.input.UnitDTO
+import io.hsar.mathhammer.fortyk.MathHammer40K
+import io.hsar.mathhammer.fortyk.cli.input.UnitDTO
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import org.junit.jupiter.api.Test
 import java.io.File
 
-internal class MathHammerTest {
+internal class MathHammer40KTest {
 
     private val objectMapper = jacksonObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -23,7 +24,7 @@ internal class MathHammerTest {
                     io.hsar.wh40k.combatsimulator.cli.SimulateCombat.ComparisonMode.DIRECT
                 )
             }
-        MathHammer(
+        MathHammer40K(
             defenders = objectMapper.readValue<List<DefenderDTO>>(getResourcePath("data/defenders/skorpekhs.json").readText())
         )
             .runSimulation(offensiveProfiles)

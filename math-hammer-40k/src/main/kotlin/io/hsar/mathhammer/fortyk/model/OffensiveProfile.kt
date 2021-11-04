@@ -1,4 +1,4 @@
-package io.hsar.mathhammer.model
+package io.hsar.mathhammer.fortyk.model
 
 /**
  * An offensive profile represents a number of models making attacks at once.
@@ -6,5 +6,5 @@ package io.hsar.mathhammer.model
 data class OffensiveProfile(
     val firingModelName: String,
     val modelsFiring: Double,
-    val weaponsAttacking: io.hsar.mathhammer.model.AttackGroup
+    val weaponsAttacking: AttackGroup
 )

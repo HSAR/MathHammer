@@ -1,4 +1,6 @@
-package io.hsar.mathhammer.model
+package io.hsar.mathhammer.fortyk.model
+
+import io.hsar.mathhammer.model.AttackResult
 
 data class UnitResult(
     val unitName: String,

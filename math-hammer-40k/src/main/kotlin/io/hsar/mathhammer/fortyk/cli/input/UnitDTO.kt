@@ -1,4 +1,4 @@
-package io.hsar.mathhammer.cli.input
+package io.hsar.mathhammer.fortyk.cli.input
 
 import io.hsar.wh40k.combatsimulator.cli.input.AttackerTypeDTO
 

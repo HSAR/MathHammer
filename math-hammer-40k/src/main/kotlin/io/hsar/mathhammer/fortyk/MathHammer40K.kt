@@ -1,15 +1,15 @@
-package io.hsar.mathhammer
+package io.hsar.mathhammer.fortyk
 
-import io.hsar.mathhammer.cli.input.Ability
-import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
-import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
-import io.hsar.mathhammer.cli.input.Ability.FLAMER
-import io.hsar.mathhammer.cli.input.Ability.ON_1_TO_HIT_REROLL
-import io.hsar.mathhammer.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
-import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
+import io.hsar.mathhammer.fortyk.cli.input.Ability
+import io.hsar.mathhammer.fortyk.cli.input.Ability.DOUBLE_ATTACKS
+import io.hsar.mathhammer.fortyk.cli.input.Ability.EXTRA_ATTACK
+import io.hsar.mathhammer.fortyk.cli.input.Ability.FLAMER
+import io.hsar.mathhammer.fortyk.cli.input.Ability.ON_1_TO_HIT_REROLL
+import io.hsar.mathhammer.fortyk.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
+import io.hsar.mathhammer.fortyk.cli.input.Ability.SHOCK_ASSAULT
+import io.hsar.mathhammer.fortyk.model.UnitProfile
+import io.hsar.mathhammer.fortyk.model.UnitResult
 import io.hsar.mathhammer.model.AttackResult
-import io.hsar.mathhammer.model.UnitProfile
-import io.hsar.mathhammer.model.UnitResult
 import io.hsar.mathhammer.statistics.HitCalculator
 import io.hsar.mathhammer.statistics.KillsCalculator
 import io.hsar.mathhammer.statistics.Reroll
@@ -17,8 +17,7 @@ import io.hsar.mathhammer.statistics.SaveCalculator
 import io.hsar.mathhammer.statistics.WoundCalculator
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 
-
-class MathHammer(
+class MathHammer40K(
     val defenders: Collection<DefenderDTO>
 ) {
 

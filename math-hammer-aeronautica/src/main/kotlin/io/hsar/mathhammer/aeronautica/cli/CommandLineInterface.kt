@@ -10,14 +10,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.hsar.mathhammer.MathHammer
-import io.hsar.mathhammer.cli.input.UnitDTO
-import io.hsar.mathhammer.model.OffensiveProfile
-import io.hsar.mathhammer.model.UnitProfile
+import io.hsar.mathhammer.aeronautica.MathHammerAeronautica
+import io.hsar.mathhammer.aeronautica.cli.input.AircraftDTO
+import io.hsar.mathhammer.fortyk.cli.input.UnitDTO
+import io.hsar.mathhammer.fortyk.model.OffensiveProfile
+import io.hsar.mathhammer.fortyk.model.UnitProfile
 import io.hsar.mathhammer.util.createCrossProduct
-import io.hsar.mathhammer.util.intersection
-import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
-import io.hsar.wh40k.combatsimulator.utils.sum
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -38,14 +36,6 @@ class SimulateCombat : Command("math-hammer") {
     private lateinit var attackerFilePaths: List<File>
 
     @Parameter(
-        names = arrayOf("--defender", "--defenders"),
-        description = "Path to an input file describing unit profile(s) defending",
-        required = true,
-        converter = FileConverter::class
-    )
-    private lateinit var defenderFilePaths: List<File>
-
-    @Parameter(
         names = arrayOf("--mode"),
         description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 1000pts of each attacking profile",
         required = false
@@ -63,18 +53,13 @@ class SimulateCombat : Command("math-hammer") {
                 }
             }
             .flatMap { attackerFilePath ->
-                objectMapper.readValue<List<UnitDTO>>(attackerFilePath.readText())
+                objectMapper.readValue<List<AircraftDTO>>(attackerFilePath.readText())
             }
             .let { attackerDTOs ->
                 generateUnitOffensives(attackerDTOs, mode)
             }
             .let { offensiveProfiles ->
-                MathHammer(
-                    defenders = defenderFilePaths
-                        .flatMap { defenderFilePath ->
-                            objectMapper.readValue<List<DefenderDTO>>(defenderFilePath.readText())
-                        }
-                )
+                MathHammerAeronautica()
                     .runSimulation(
                         offensiveProfiles
                     )
@@ -105,7 +90,7 @@ class SimulateCombat : Command("math-hammer") {
     }
 
     companion object {
-        val NORMALISED_POINTS = 1000.0
+        val NORMALISED_POINTS = 25.0
 
         private val objectMapper = jacksonObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)

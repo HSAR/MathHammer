@@ -1,4 +1,4 @@
-package io.hsar.mathhammer.cli.input
+package io.hsar.mathhammer.fortyk.cli.input
 
 data class WeaponDTO(
     val name: String,

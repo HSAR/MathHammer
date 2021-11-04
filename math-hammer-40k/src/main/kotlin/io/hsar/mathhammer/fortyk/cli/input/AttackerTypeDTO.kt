@@ -1,14 +1,14 @@
 package io.hsar.wh40k.combatsimulator.cli.input
 
-import io.hsar.mathhammer.cli.input.Ability.ASSAULT_AND_RAPID_FIRE_EXTRA_AP
-import io.hsar.mathhammer.cli.input.Ability.HEAVY_WEAPON_EXTRA_AP
-import io.hsar.mathhammer.cli.input.Ability.MELEE_EXTRA_AP
-import io.hsar.mathhammer.cli.input.WeaponDTO
-import io.hsar.mathhammer.cli.input.WeaponType.HEAVY
-import io.hsar.mathhammer.cli.input.WeaponType.MELEE
-import io.hsar.mathhammer.cli.input.WeaponType.RAPID_FIRE
-import io.hsar.mathhammer.model.AttackGroup
-import io.hsar.mathhammer.model.AttackProfile
+import io.hsar.mathhammer.fortyk.cli.input.Ability.ASSAULT_AND_RAPID_FIRE_EXTRA_AP
+import io.hsar.mathhammer.fortyk.cli.input.Ability.HEAVY_WEAPON_EXTRA_AP
+import io.hsar.mathhammer.fortyk.cli.input.Ability.MELEE_EXTRA_AP
+import io.hsar.mathhammer.fortyk.cli.input.WeaponDTO
+import io.hsar.mathhammer.fortyk.cli.input.WeaponType.HEAVY
+import io.hsar.mathhammer.fortyk.cli.input.WeaponType.MELEE
+import io.hsar.mathhammer.fortyk.cli.input.WeaponType.RAPID_FIRE
+import io.hsar.mathhammer.fortyk.model.AttackGroup
+import io.hsar.mathhammer.fortyk.model.AttackProfile
 import io.hsar.mathhammer.statistics.DiceStringParser
 
 data class AttackerTypeDTO(
