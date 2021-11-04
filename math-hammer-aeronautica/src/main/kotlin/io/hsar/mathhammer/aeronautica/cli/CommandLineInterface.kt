@@ -12,8 +12,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.aeronautica.MathHammerAeronautica
 import io.hsar.mathhammer.aeronautica.cli.input.AircraftDTO
-import io.hsar.mathhammer.fortyk.cli.input.UnitDTO
-import io.hsar.mathhammer.fortyk.model.OffensiveProfile
+import io.hsar.mathhammer.aeronautica.model.AircraftProfile
+import io.hsar.mathhammer.aeronautica.model.OffensiveProfile
 import io.hsar.mathhammer.fortyk.model.UnitProfile
 import io.hsar.mathhammer.util.createCrossProduct
 import java.io.File
@@ -63,8 +63,8 @@ class SimulateCombat : Command("math-hammer") {
                     .runSimulation(
                         offensiveProfiles
                     )
-                    .map { (unitResult, unitProfile) ->
-                        unitResult.offensivesToResults.map { (offensiveProfile, offensiveResults) ->
+                    .map { (attackResult, unitProfile) ->
+                        attackResult.offensivesToResults.map { (offensiveProfile, offensiveResults) ->
                             val weapons = offensiveResults.map { attackResult ->
                                 "${
                                     String.format(
@@ -79,7 +79,7 @@ class SimulateCombat : Command("math-hammer") {
                             val unitName = unitProfile.unitName
                             """
                                 $unitName $attackProfiles: 
-                                Expecting ${unitResult.expectedKills} kills with ${String.format("%.3f", unitResult.expectedDamage)} damage.
+                                Expecting ${attackResult.expectedKills} kills with ${String.format("%.3f", attackResult.expectedDamage)} damage.
                             """.trimIndent()
                         }
                     }
@@ -101,7 +101,7 @@ class SimulateCombat : Command("math-hammer") {
                 .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
         )
 
-        fun generateUnitOffensives(units: List<UnitDTO>, mode: ComparisonMode): List<UnitProfile> {
+        fun generateUnitOffensives(units: List<AircraftDTO>, mode: ComparisonMode): List<AircraftProfile> {
             return units.flatMap { unit ->
                 // Convert DTOs into necessary objects
                 val modelNameAndAttackGroupNameToAttackGroup = unit.models.map { (modelName, attackerTypeDTO) ->
@@ -158,8 +158,8 @@ class SimulateCombat : Command("math-hammer") {
                                 }.let { scaleFactor ->
                                     totalPointsCost to attackGroupsToNumberOfModels.map { (attackGroup, numberOfModels) ->
                                         OffensiveProfile(
-                                            firingModelName = attackGroup.modelName,
-                                            modelsFiring = numberOfModels * scaleFactor,
+                                            name = attackGroup.modelName,
+                                            modelsAttacking = numberOfModels * scaleFactor,
                                             weaponsAttacking = attackGroup
                                         )
                                     }
