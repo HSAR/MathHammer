@@ -10,6 +10,11 @@
 
     <name>WH40K Weapon Effectiveness Calculator</name>
 
+    <modules>
+        <module>math-hammer-library</module>
+        <module>math-hammer-40k</module>
+    </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetJdk>11</project.build.targetJdk>
@@ -22,7 +27,6 @@
         <jackson.version>2.12.3</jackson.version>
         <junit.jupiter.version>5.3.2</junit.jupiter.version>
     </properties>
-
 
     <dependencies>
         <dependency>
