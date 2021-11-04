@@ -7,4 +7,4 @@ workflows:
   maven_test:
     jobs:
       - maven/test: # checkout, build, test, and upload test results
-          maven_command: mvn package
+          maven_command: mvn package # Default was: "mvn", but now "mvn package" so that the dependencies:go-offline step contains math-hammer-library in the reactor
