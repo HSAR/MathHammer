@@ -1,3 +1,4 @@
 # Things to Do
 
-* Weapon auxiliary effects - dakka, assault doctrine, etc.
+* All shooting attacks are resolved before melee attacks
+* Weapon auxiliary effects - dakka, etc.
