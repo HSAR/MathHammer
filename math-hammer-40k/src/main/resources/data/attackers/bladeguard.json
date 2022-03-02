@@ -29,7 +29,7 @@
               "AP": -3,
               "damage": 2,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE"
               ]
             }
           ]
@@ -58,7 +58,7 @@
               "AP": -3,
               "damage": 2,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE"
               ]
             }
           ],
@@ -81,7 +81,7 @@
               "AP": -3,
               "damage": 2,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE"
               ]
             }
           ],
@@ -101,7 +101,7 @@
               "AP": -3,
               "damage": 2,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE"
               ]
             }
           ]

@@ -3,10 +3,10 @@ package io.hsar.mathhammer
 import io.hsar.mathhammer.cli.input.Ability
 import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
 import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
+import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK_ON_CHARGE
 import io.hsar.mathhammer.cli.input.Ability.FLAMER
 import io.hsar.mathhammer.cli.input.Ability.ON_1_TO_HIT_REROLL
 import io.hsar.mathhammer.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
-import io.hsar.mathhammer.cli.input.Ability.SHOCK_ASSAULT
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.UnitProfile
 import io.hsar.mathhammer.model.UnitResult
@@ -42,22 +42,14 @@ class MathHammer(
                             .map { ability ->
                                 when (ability) {
                                     DOUBLE_ATTACKS -> attackProfile.attackNumber // bonus number of attacks is the same as base
-                                    EXTRA_ATTACK -> 1 // see chainswords etc
-                                    SHOCK_ASSAULT -> 1 // extra attack on the charge
-                                    else -> 0
+                                    EXTRA_ATTACK -> 1.0 // see chainswords etc
+                                    EXTRA_ATTACK_ON_CHARGE -> 1.0 // extra attack on the charge
+                                    else -> 0.0
                                 }
+                            }.sum()
+                            .let { bonusAttacksGenerated ->
+                                bonusAttacksGenerated + attackProfile.attackNumber
                             }
-                        when {
-                            attackProfile.abilities.contains(DOUBLE_ATTACKS) -> {
-                                attackProfile.attackNumber * 2
-                            }
-                            attackProfile.abilities.contains(EXTRA_ATTACK) -> {
-                                attackProfile.attackNumber + 1
-                            }
-                            else -> {
-                                attackProfile.attackNumber
-                            }
-                        }
                             .let { attacksPerModel ->
                                 eachOffensiveProfile.modelsFiring * attacksPerModel
                             }
@@ -135,6 +127,7 @@ class MathHammer(
                 UnitResult(
                     unitName = unitProfile.unitName,
                     pointsCost = unitProfile.totalPointsCost,
+                    defender = defensiveProfile,
                     expectedDamage = expectedDamage,
                     expectedKills = KillsCalculator.getKills(defensiveProfile.wounds, allAttackResults),
                     offensivesToResults = offensivesToResults

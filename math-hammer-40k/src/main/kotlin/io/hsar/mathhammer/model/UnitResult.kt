@@ -1,8 +1,11 @@
 package io.hsar.mathhammer.model
 
+import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
+
 data class UnitResult(
     val unitName: String,
     val pointsCost: Double,
+    val defender: DefenderDTO,
     val expectedDamage: Double,
     val expectedKills: Int,
     val offensivesToResults: Map<OffensiveProfile, List<AttackResult>>

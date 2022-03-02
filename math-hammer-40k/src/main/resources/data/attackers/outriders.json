@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Outriders",
+    "unitComposition": {
+      "Outrider": 2,
+      "Outrider Sergeant": 1
+    },
+    "models": {
+      "Outrider": {
+        "pointsCost": 50,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 4,
+        "attacks": 2,
+        "attackGroups": {
+          "Twin Bolt Rifles and Astartes Chainsword": [
+            {
+              "name": "Twin Bolt Rifles",
+              "weaponType": "RAPID_FIRE",
+              "weaponValue": 2,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Astartes Chainsword",
+              "weaponType": "MELEE",
+              "strength": "USER",
+              "AP": -1,
+              "damage": 1,
+              "abilities": [
+                "EXTRA_ATTACK_ON_CHARGE",
+                "EXTRA_ATTACK_ON_CHARGE",
+                "EXTRA_ATTACK",
+                "MELEE_EXTRA_AP"
+              ]
+            }
+          ]
+        }
+      },
+      "Outrider Sergeant": {
+        "pointsCost": 50,
+        "WS": 3,
+        "BS": 3,
+        "userStrength": 5,
+        "attacks": 3,
+        "attackGroups": {
+          "Twin Bolt Rifles and Astartes Chainsword": [
+            {
+              "name": "Twin Bolt Rifles",
+              "weaponType": "RAPID_FIRE",
+              "weaponValue": 2,
+              "strength": 4,
+              "AP": -1,
+              "damage": 1
+            },
+            {
+              "name": "Astartes Chainsword",
+              "weaponType": "MELEE",
+              "strength": "USER",
+              "AP": -1,
+              "damage": 1,
+              "abilities": [
+                "EXTRA_ATTACK_ON_CHARGE",
+                "EXTRA_ATTACK_ON_CHARGE",
+                "EXTRA_ATTACK",
+                "MELEE_EXTRA_AP"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

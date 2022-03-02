@@ -29,8 +29,9 @@
               "AP": -1,
               "damage": 1,
               "abilities": [
-                "SHOCK_ASSAULT",
-                "EXTRA_ATTACK"
+                "EXTRA_ATTACK_ON_CHARGE",
+                "EXTRA_ATTACK",
+                "MELEE_EXTRA_AP"
               ]
             }
           ]
@@ -59,8 +60,9 @@
               "AP": -1,
               "damage": 1,
               "abilities": [
-                "SHOCK_ASSAULT",
-                "EXTRA_ATTACK"
+                "EXTRA_ATTACK_ON_CHARGE",
+                "EXTRA_ATTACK",
+                "MELEE_EXTRA_AP"
               ]
             }
           ],
@@ -81,7 +83,8 @@
               "AP": -3,
               "damage": 1,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE",
+                "MELEE_EXTRA_AP"
               ]
             }
           ],
@@ -103,7 +106,8 @@
               "AP": -3,
               "damage": 2,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE",
+                "MELEE_EXTRA_AP"
               ]
             }
           ],
@@ -125,7 +129,8 @@
               "AP": -2,
               "damage": 3,
               "abilities": [
-                "SHOCK_ASSAULT"
+                "EXTRA_ATTACK_ON_CHARGE",
+                "MELEE_EXTRA_AP"
               ]
             }
           ]

@@ -10,6 +10,7 @@ import io.hsar.mathhammer.cli.input.WeaponType.RAPID_FIRE
 import io.hsar.mathhammer.model.AttackGroup
 import io.hsar.mathhammer.model.AttackProfile
 import io.hsar.mathhammer.statistics.DiceStringParser
+import kotlin.math.absoluteValue
 
 data class AttackerTypeDTO(
     val pointsCost: Int,
@@ -52,12 +53,17 @@ data class AttackerTypeDTO(
                 val weaponDamage = weapon.damage.toDoubleOrNull()
                     ?: DiceStringParser.expectedValue(weapon.damage)
 
-                val weaponAP = when {
-                    weapon.abilities.contains(HEAVY_WEAPON_EXTRA_AP) && weapon.weaponType == HEAVY -> weapon.AP + 1
-                    weapon.abilities.contains(ASSAULT_AND_RAPID_FIRE_EXTRA_AP) && weapon.weaponType == RAPID_FIRE -> weapon.AP + 1
-                    weapon.abilities.contains(MELEE_EXTRA_AP) && weapon.weaponType == MELEE -> weapon.AP + 1
-                    else -> weapon.AP
-                }
+                val weaponAP = weapon.abilities.map { ability ->
+                    when {
+                        ability == HEAVY_WEAPON_EXTRA_AP && weapon.weaponType == HEAVY -> 1
+                        ability == ASSAULT_AND_RAPID_FIRE_EXTRA_AP && weapon.weaponType == RAPID_FIRE -> 1
+                        ability == MELEE_EXTRA_AP && weapon.weaponType == MELEE -> 1
+                        else -> 0
+                    }
+                }.sum()
+                    .let { bonusAP ->
+                        weapon.AP.absoluteValue + bonusAP
+                    }
 
                 AttackProfile(
                     attackName = weapon.name,

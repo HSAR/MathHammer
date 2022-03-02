@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.cli.input.UnitDTO
+import io.hsar.wh40k.combatsimulator.cli.SimulateCombat
+import io.hsar.wh40k.combatsimulator.cli.SimulateCombat.Companion.generateUnitOffensives
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -16,11 +18,11 @@ internal class MathHammerTest {
     @Test
     fun `test running a simulation`() {
         val offensiveProfiles = objectMapper
-            .readValue<List<UnitDTO>>(getResourcePath("data/attackers/hellblasters.json").readText())
+            .readValue<List<UnitDTO>>(getResourcePath("data/attackers/assault_intercessors.json").readText())
             .let { attackerDTOs ->
-                io.hsar.wh40k.combatsimulator.cli.SimulateCombat.Companion.generateUnitOffensives(
+                generateUnitOffensives(
                     attackerDTOs,
-                    io.hsar.wh40k.combatsimulator.cli.SimulateCombat.ComparisonMode.DIRECT
+                    SimulateCombat.ComparisonMode.DIRECT
                 )
             }
         MathHammer(

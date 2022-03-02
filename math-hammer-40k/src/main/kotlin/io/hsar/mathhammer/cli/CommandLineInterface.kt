@@ -69,37 +69,40 @@ class SimulateCombat : Command("math-hammer") {
                 generateUnitOffensives(attackerDTOs, mode)
             }
             .let { offensiveProfiles ->
-                MathHammer(
-                    defenders = defenderFilePaths
-                        .flatMap { defenderFilePath ->
-                            objectMapper.readValue<List<DefenderDTO>>(defenderFilePath.readText())
-                        }
-                )
-                    .runSimulation(
-                        offensiveProfiles
-                    )
-                    .map { (unitResult, unitProfile) ->
-                        unitResult.offensivesToResults.map { (offensiveProfile, offensiveResults) ->
-                            val weapons = offensiveResults.map { attackResult ->
-                                "${
-                                    String.format(
-                                        "%.2f",
-                                        attackResult.expectedHits
-                                    )
-                                } ${attackResult.name}"
-                            }
-
-                            "${String.format("%.2f", offensiveProfile.modelsFiring)} ${offensiveProfile.firingModelName}s making $weapons hits"
-                        }.let { attackProfiles ->
-                            val unitName = unitProfile.unitName
-                            """
-                                $unitName $attackProfiles: 
-                                Expecting ${unitResult.expectedKills} kills with ${String.format("%.3f", unitResult.expectedDamage)} damage.
-                            """.trimIndent()
-                        }
+                defenderFilePaths
+                    .flatMap { defenderFilePath ->
+                        objectMapper.readValue<List<DefenderDTO>>(defenderFilePath.readText())
                     }
-                    .forEach { result ->
-                        println(result)
+                    .let { defenderDTOs ->
+                        MathHammer(
+                            defenders = defenderDTOs
+                        )
+                            .runSimulation(
+                                offensiveProfiles
+                            )
+                            .map { (unitResult, unitProfile) ->
+                                unitResult.offensivesToResults.map { (offensiveProfile, offensiveResults) ->
+                                    val weapons = offensiveResults.map { attackResult ->
+                                        "${
+                                            String.format(
+                                                "%.2f",
+                                                attackResult.expectedHits
+                                            )
+                                        } ${attackResult.name}"
+                                    }
+
+                                    "${String.format("%.2f", offensiveProfile.modelsFiring)} ${offensiveProfile.firingModelName}s making $weapons hits"
+                                }.let { attackProfiles ->
+                                    val unitName = unitProfile.unitName
+                                    """
+                                $unitName $attackProfiles: 
+                                Expecting ${unitResult.expectedKills} kills on ${unitResult.defender.name} with ${String.format("%.3f", unitResult.expectedDamage)} damage.
+                            """.trimIndent()
+                                }
+                            }
+                            .forEach { result ->
+                                println(result)
+                            }
                     }
             }
     }
