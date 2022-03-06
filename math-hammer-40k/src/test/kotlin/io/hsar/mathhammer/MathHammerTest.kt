@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.cli.input.UnitDTO
-import io.hsar.wh40k.combatsimulator.cli.SimulateCombat
-import io.hsar.wh40k.combatsimulator.cli.SimulateCombat.Companion.generateUnitOffensives
+import io.hsar.wh40k.combatsimulator.cli.CommandLineInterface
+import io.hsar.wh40k.combatsimulator.cli.CommandLineInterface.Companion.generateUnitOffensives
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -22,7 +22,7 @@ internal class MathHammerTest {
             .let { attackerDTOs ->
                 generateUnitOffensives(
                     attackerDTOs,
-                    SimulateCombat.ComparisonMode.DIRECT
+                    CommandLineInterface.ComparisonMode.DIRECT
                 )
             }
         MathHammer(
