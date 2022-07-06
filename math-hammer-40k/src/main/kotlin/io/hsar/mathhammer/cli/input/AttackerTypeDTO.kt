@@ -1,6 +1,7 @@
 package io.hsar.wh40k.combatsimulator.cli.input
 
 import io.hsar.mathhammer.cli.input.AttackerAbility.ASSAULT_AND_RAPID_FIRE_EXTRA_AP
+import io.hsar.mathhammer.cli.input.AttackerAbility.BLAST
 import io.hsar.mathhammer.cli.input.AttackerAbility.HEAVY_WEAPON_EXTRA_AP
 import io.hsar.mathhammer.cli.input.AttackerAbility.MELEE_EXTRA_AP
 import io.hsar.mathhammer.cli.input.WeaponDTO
@@ -31,7 +32,11 @@ data class AttackerTypeDTO(
                     MELEE -> this.attacks.toDouble() * weapon.weaponValue.toDouble()
                     RAPID_FIRE -> weapon.weaponValue.toDouble() * 2.0
                     else -> weapon.weaponValue.toDoubleOrNull()
-                        ?: DiceStringParser.expectedValue(weapon.weaponValue)
+                        ?: if (weapon.abilities.contains(BLAST)) {
+                            DiceStringParser.maxValue(weapon.weaponValue)
+                        } else {
+                            DiceStringParser.expectedValue(weapon.weaponValue)
+                        }
                 }
                 val weaponSkill = when (weapon.weaponType) {
                     MELEE -> this.WS

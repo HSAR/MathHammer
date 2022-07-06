@@ -138,7 +138,7 @@ class MathHammer(
                                         null
                                     }
 
-                                listOf(mainAttackResult, mortalWoundResult).filterNotNull()
+                                listOfNotNull(mainAttackResult, mortalWoundResult)
                             }
                     }.let { attackResults ->
                         eachOffensiveProfile to attackResults
