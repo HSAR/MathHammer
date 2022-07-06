@@ -14,9 +14,9 @@ import io.hsar.mathhammer.cli.input.DefenderAbilities
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.UnitProfile
 import io.hsar.mathhammer.model.UnitResult
-import io.hsar.mathhammer.statistics.ApCalculator
 import io.hsar.mathhammer.statistics.HitCalculator
 import io.hsar.mathhammer.statistics.KillsCalculator
+import io.hsar.mathhammer.statistics.ReductionCalculator
 import io.hsar.mathhammer.statistics.Reroll
 import io.hsar.mathhammer.statistics.SaveCalculator
 import io.hsar.mathhammer.statistics.WoundCalculator
@@ -105,7 +105,13 @@ class MathHammer(
                                     defensiveProfile.abilities.contains(DefenderAbilities.AP_REDUCTION) -> 1
                                     else -> 0
                                 }
-                                val effectiveAP = ApCalculator.effectiveAP(apReduction, attackProfile.AP)
+                                val effectiveAP = ReductionCalculator.effectiveNumber(apReduction, attackProfile.AP)
+
+                                val damageReduction = when {
+                                    defensiveProfile.abilities.contains(DefenderAbilities.DAMAGE_REDUCTION) -> 1.0
+                                    else -> 0.0
+                                }
+                                val effectiveDamage = ReductionCalculator.effectiveNumber(damageReduction, attackProfile.damage)
 
                                 val mainAttackResult = (expectedWoundingHits * SaveCalculator.failedSaves(
                                     AP = effectiveAP,
@@ -116,7 +122,7 @@ class MathHammer(
                                         AttackResult(
                                             name = attackProfile.attackName,
                                             expectedHits = expectedSuccessfulAttacks,
-                                            damagePerHit = attackProfile.damage
+                                            damagePerHit = effectiveDamage
                                         )
                                     }
 
