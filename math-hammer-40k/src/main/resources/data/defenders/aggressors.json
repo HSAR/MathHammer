@@ -1,8 +1,8 @@
 [
   {
-    "name": "Intercessors",
-    "toughness": 4,
-    "wounds": 2,
+    "name": "Aggressors",
+    "toughness": 5,
+    "wounds": 3,
     "armourSave": 3,
     "abilities": [
       "AP_REDUCTION"

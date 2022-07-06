@@ -1,15 +1,20 @@
 package io.hsar.mathhammer
 
-import io.hsar.mathhammer.cli.input.Ability
-import io.hsar.mathhammer.cli.input.Ability.DOUBLE_ATTACKS
-import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK
-import io.hsar.mathhammer.cli.input.Ability.EXTRA_ATTACK_ON_CHARGE
-import io.hsar.mathhammer.cli.input.Ability.FLAMER
-import io.hsar.mathhammer.cli.input.Ability.ON_1_TO_HIT_REROLL
-import io.hsar.mathhammer.cli.input.Ability.ON_6_TO_WOUND_MORTAL_WOUND
+import io.hsar.mathhammer.cli.input.AttackerAbility
+import io.hsar.mathhammer.cli.input.AttackerAbility.DOUBLE_ATTACKS
+import io.hsar.mathhammer.cli.input.AttackerAbility.EXTRA_ATTACK
+import io.hsar.mathhammer.cli.input.AttackerAbility.EXTRA_ATTACK_ON_CHARGE
+import io.hsar.mathhammer.cli.input.AttackerAbility.FLAMER
+import io.hsar.mathhammer.cli.input.AttackerAbility.ON_1_TO_HIT_REROLL
+import io.hsar.mathhammer.cli.input.AttackerAbility.ON_1_TO_WOUND_REROLL
+import io.hsar.mathhammer.cli.input.AttackerAbility.ON_6_TO_WOUND_MORTAL_WOUND
+import io.hsar.mathhammer.cli.input.AttackerAbility.ON_ALL_TO_HIT_REROLL
+import io.hsar.mathhammer.cli.input.AttackerAbility.ON_ALL_TO_WOUND_REROLL
+import io.hsar.mathhammer.cli.input.DefenderAbilities
 import io.hsar.mathhammer.model.AttackResult
 import io.hsar.mathhammer.model.UnitProfile
 import io.hsar.mathhammer.model.UnitResult
+import io.hsar.mathhammer.statistics.ApCalculator
 import io.hsar.mathhammer.statistics.HitCalculator
 import io.hsar.mathhammer.statistics.KillsCalculator
 import io.hsar.mathhammer.statistics.Reroll
@@ -58,6 +63,8 @@ class MathHammer(
                                     shotsFired // flamers auto-hit
                                 } else {
                                     val rerolls = when {
+                                        defensiveProfile.abilities.contains(DefenderAbilities.NO_HIT_REROLLS) -> Reroll.NONE
+                                        attackProfile.abilities.contains(ON_ALL_TO_HIT_REROLL) -> Reroll.ALL
                                         attackProfile.abilities.contains(ON_1_TO_HIT_REROLL) -> Reroll.ONES
                                         else -> Reroll.NONE
                                     }
@@ -65,7 +72,7 @@ class MathHammer(
                                 }
                             }
                             .let { mainAttackHits ->
-                                mainAttackHits + if (attackProfile.abilities.contains(Ability.ON_6_TO_HIT_TWO_EXTRA_HITS)) {
+                                mainAttackHits + if (attackProfile.abilities.contains(AttackerAbility.ON_6_TO_HIT_TWO_EXTRA_HITS)) {
                                     // Tesla effect is "6s to hit cause 2 additional hits", which can be modelled as 33% extra hits
                                     mainAttackHits / 3.0
                                 } else {
@@ -73,9 +80,16 @@ class MathHammer(
                                 }
                             }
                             .let { expectedHits ->
+                                val rerolls = when {
+                                    defensiveProfile.abilities.contains(DefenderAbilities.NO_WOUND_REROLLS) -> Reroll.NONE
+                                    attackProfile.abilities.contains(ON_ALL_TO_WOUND_REROLL) -> Reroll.ALL
+                                    attackProfile.abilities.contains(ON_1_TO_WOUND_REROLL) -> Reroll.ONES
+                                    else -> Reroll.NONE
+                                }
                                 val expectedWoundingHits = expectedHits * WoundCalculator.woundingHits(
                                     strength = attackProfile.strength,
-                                    toughness = defensiveProfile.toughness
+                                    toughness = defensiveProfile.toughness,
+                                    reroll = rerolls
                                 )
 
                                 val mortalWounds = if (attackProfile.abilities.contains(ON_6_TO_WOUND_MORTAL_WOUND)) {
@@ -87,8 +101,14 @@ class MathHammer(
                                 expectedWoundingHits to mortalWounds
                             }
                             .let { (expectedWoundingHits, mortalWounds) ->
+                                val apReduction = when {
+                                    defensiveProfile.abilities.contains(DefenderAbilities.AP_REDUCTION) -> 1
+                                    else -> 0
+                                }
+                                val effectiveAP = ApCalculator.effectiveAP(apReduction, attackProfile.AP)
+
                                 val mainAttackResult = (expectedWoundingHits * SaveCalculator.failedSaves(
-                                    AP = attackProfile.AP,
+                                    AP = effectiveAP,
                                     save = defensiveProfile.armourSave,
                                     invuln = defensiveProfile.invulnSave
                                 ))
@@ -102,15 +122,15 @@ class MathHammer(
 
                                 // Mortal wounds pass through saves
                                 val mortalWoundResult =
-                                                if (mortalWounds > 0) {
-                                                        AttackResult(
-                                                            name = "${attackProfile.attackName} (Mortal Wounds)",
-                                                            expectedHits = mortalWounds,
-                                                            damagePerHit = 1.0
-                                                        )
-                                                } else {
-                                                    null
-                                                }
+                                    if (mortalWounds > 0) {
+                                        AttackResult(
+                                            name = "${attackProfile.attackName} (Mortal Wounds)",
+                                            expectedHits = mortalWounds,
+                                            damagePerHit = 1.0
+                                        )
+                                    } else {
+                                        null
+                                    }
 
                                 listOf(mainAttackResult, mortalWoundResult).filterNotNull()
                             }

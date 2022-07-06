@@ -30,7 +30,7 @@ class CommandLineInterface : Command("math-hammer") {
     enum class ComparisonMode { DIRECT, NORMALISED }
 
     @Parameter(
-        names = arrayOf("--attacker", "--attackers"),
+        names = ["--attacker", "--attackers"],
         description = "Comma-separated list of input files or directories containing input files for unit profile(s) attacking",
         required = true,
         converter = FileConverter::class
@@ -38,7 +38,7 @@ class CommandLineInterface : Command("math-hammer") {
     private lateinit var attackerFilePaths: List<File>
 
     @Parameter(
-        names = arrayOf("--defender", "--defenders"),
+        names = ["--defender", "--defenders"],
         description = "Path to an input file describing unit profile(s) defending",
         required = true,
         converter = FileConverter::class
@@ -46,7 +46,7 @@ class CommandLineInterface : Command("math-hammer") {
     private lateinit var defenderFilePaths: List<File>
 
     @Parameter(
-        names = arrayOf("--mode"),
+        names = ["--mode"],
         description = "Comparison mode: DIRECT for un-normalised values or NORMALISED to normalise for 1000pts of each attacking profile",
         required = false
     )

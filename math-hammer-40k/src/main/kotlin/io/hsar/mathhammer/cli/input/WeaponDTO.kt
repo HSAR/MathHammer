@@ -9,7 +9,7 @@ data class WeaponDTO(
     val strength: String,
     val AP: Int,
     val damage: String,
-    val abilities: List<Ability> = emptyList()
+    val abilities: List<AttackerAbility> = emptyList()
 )
 
 enum class WeaponType {

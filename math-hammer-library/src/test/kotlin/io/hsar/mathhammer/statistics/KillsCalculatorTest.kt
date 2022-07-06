@@ -5,7 +5,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 
-internal class KillsCalculatorTest {
+class KillsCalculatorTest {
 
     @Test
     fun `hits cause the correct number of kills`() {

@@ -5,7 +5,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Test
 
-internal class SaveCalculatorTest {
+class SaveCalculatorTest {
 
     @Test
     fun `4+ save has half chance`() {

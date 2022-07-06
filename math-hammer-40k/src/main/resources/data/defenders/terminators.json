@@ -1,9 +1,9 @@
 [
   {
-    "name": "Intercessors",
+    "name": "Terminators",
     "toughness": 4,
-    "wounds": 2,
-    "armourSave": 3,
+    "wounds": 3,
+    "armourSave": 2,
     "abilities": [
       "AP_REDUCTION"
     ]
