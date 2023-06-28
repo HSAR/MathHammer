@@ -1,7 +1,7 @@
 [
   {
     "name": "Skorpekh Destroyers",
-    "toughness": 5,
+    "toughness": 6,
     "wounds": 3,
     "armourSave": 3
   }

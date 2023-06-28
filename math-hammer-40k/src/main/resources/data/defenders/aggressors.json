@@ -1,11 +1,8 @@
 [
   {
     "name": "Aggressors",
-    "toughness": 5,
+    "toughness": 6,
     "wounds": 3,
-    "armourSave": 3,
-    "abilities": [
-      "AP_REDUCTION"
-    ]
+    "armourSave": 3
   }
 ]

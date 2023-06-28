@@ -12,8 +12,4 @@ data class UnitDTO(
             models.getOrElse(attackerName) { throw IllegalArgumentException("Could not find a model matching the name [$attackerName] in the unit [$name]") }
         }
     }
-
-    fun getAttackerName(attackerTypeDTO: AttackerTypeDTO): String {
-        return (models.entries.find { it.value == attackerTypeDTO } ?: throw IllegalArgumentException("Could not find AttackerDTO $attackerTypeDTO")).key
-    }
 }

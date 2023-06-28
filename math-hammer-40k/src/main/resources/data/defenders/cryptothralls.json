@@ -1,8 +1,11 @@
 [
   {
     "name": "Cryptothralls",
-    "toughness": 5,
+    "toughness": 4,
     "wounds": 2,
-    "armourSave": 3
+    "armourSave": 3,
+    "abilities": {
+      "IGNORE_WOUNDS": 4
+    }
   }
 ]

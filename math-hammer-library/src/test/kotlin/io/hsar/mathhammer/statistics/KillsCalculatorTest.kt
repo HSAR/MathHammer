@@ -14,7 +14,10 @@ class KillsCalculatorTest {
         val attackResult = AttackResult(name = "test attack result", expectedHits = 4.0, damagePerHit = 1.0)
 
         // Act
-        val result = KillsCalculator.getKills(targetWounds = targetWounds, attackResults = listOf(attackResult))
+        val result = KillsCalculator.getKills(
+            targetWounds = targetWounds,
+            attackResults = listOf(attackResult)
+        )
 
         // Assert
         assertThat(result, equalTo(2))
@@ -27,7 +30,10 @@ class KillsCalculatorTest {
         val attackResult = AttackResult(name = "test attack result", expectedHits = 3.0, damagePerHit = 1.0)
 
         // Act
-        val result = KillsCalculator.getKills(targetWounds = targetWounds, attackResults = listOf(attackResult))
+        val result = KillsCalculator.getKills(
+            targetWounds = targetWounds,
+            attackResults = listOf(attackResult)
+        )
 
         // Assert
         assertThat(result, equalTo(1))
@@ -37,10 +43,17 @@ class KillsCalculatorTest {
     fun `damage doesn't overflow`() {
         // Arrange
         val targetWounds = 3
-        val attackResult = AttackResult(name = "test attack result", expectedHits = 3.0, damagePerHit = 2.0) // this does 6 total damage which is enough to make 2 kills, but as damage is lost in overflow only kills 1
+        val attackResult = AttackResult(
+            name = "test attack result",
+            expectedHits = 3.0,
+            damagePerHit = 2.0
+        ) // this does 6 total damage which is enough to make 2 kills, but as damage is lost in overflow only kills 1
 
         // Act
-        val result = KillsCalculator.getKills(targetWounds = targetWounds, attackResults = listOf(attackResult))
+        val result = KillsCalculator.getKills(
+            targetWounds = targetWounds,
+            attackResults = listOf(attackResult)
+        )
 
         // Assert
         assertThat(result, equalTo(1))

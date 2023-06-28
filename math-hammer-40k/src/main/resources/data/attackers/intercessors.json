@@ -7,79 +7,38 @@
     },
     "models": {
       "Intercessor": {
-        "pointsCost": 20,
-        "WS": 3,
-        "BS": 3,
-        "userStrength": 4,
-        "attacks": 2,
+        "pointsCost": 19,
         "attackGroups": {
-          "Auto Bolt Rifle": [
-            {
-              "name": "Auto Bolt Rifle",
-              "weaponType": "ASSAULT",
-              "weaponValue": 3,
-              "strength": 4,
-              "AP": 0,
-              "damage": 1
-            }
-          ],
           "Bolt Rifle": [
             {
               "name": "Bolt Rifle",
-              "weaponType": "RAPID_FIRE",
-              "weaponValue": 1,
+              "weaponAbilities": [
+                "HEAVY"
+              ],
+              "attacks": 2,
+              "attackSkill": 3,
               "strength": 4,
               "AP": -1,
               "damage": 1
-            }
-          ],
-          "Stalker Bolt Rifle": [
-            {
-              "name": "Stalker Bolt Rifle",
-              "weaponType": "HEAVY",
-              "weaponValue": 1,
-              "strength": 4,
-              "AP": -2,
-              "damage": 2
             }
           ]
         }
       },
       "Intercessor Sergeant": {
-        "pointsCost": 20,
-        "WS": 3,
-        "BS": 3,
-        "userStrength": 4,
-        "attacks": 3,
+        "pointsCost": 19,
         "attackGroups": {
-          "Auto Bolt Rifle": [
-            {
-              "name": "Auto Bolt Rifle",
-              "weaponType": "ASSAULT",
-              "weaponValue": 3,
-              "strength": 4,
-              "AP": 0,
-              "damage": 1
-            }
-          ],
           "Bolt Rifle": [
             {
               "name": "Bolt Rifle",
-              "weaponType": "RAPID_FIRE",
-              "weaponValue": 1,
+              "weaponAbilities": [
+                "ASSAULT",
+                "HEAVY"
+              ],
+              "attacks": 2,
+              "attackSkill": 3,
               "strength": 4,
               "AP": -1,
               "damage": 1
-            }
-          ],
-          "Stalker Bolt Rifle": [
-            {
-              "name": "Stalker Bolt Rifle",
-              "weaponType": "HEAVY",
-              "weaponValue": 1,
-              "strength": 4,
-              "AP": -2,
-              "damage": 2
             }
           ]
         }

@@ -1,84 +1,68 @@
 [
   {
-    "name": "Bladeguard Veteran Squad",
+    "name": "Hellblaster Squad",
     "unitComposition": {
       "Hellblaster": 4,
       "Hellblaster Sergeant": 1
     },
     "models": {
       "Hellblaster": {
-        "pointsCost": 33,
-        "WS": 3,
-        "BS": 3,
-        "userStrength": 4,
-        "attacks": 2,
+        "pointsCost": 25,
         "attackGroups": {
-          "Plasma Incinerator": [
+          "Plasma Incinerator (Standard)": [
             {
-              "name": "Plasma Incinerator",
-              "weaponType": "RAPID_FIRE",
-              "weaponValue": 1,
+              "name": "Plasma Incinerator (Standard)",
+              "weaponAbilities": [
+                "HEAVY"
+              ],
+              "attacks": 2,
+              "attackSkill": 3,
               "strength": 7,
-              "AP": -4,
+              "AP": -2,
               "damage": 1
             }
           ],
-          "Assault Plasma Incinerator": [
+          "Plasma Incinerator (Supercharge)": [
             {
-              "name": "Assault Plasma Incinerator",
-              "weaponType": "ASSAULT",
-              "weaponValue": 3,
-              "strength": 6,
-              "AP": -4,
-              "damage": 1
-            }
-          ],
-          "Heavy Plasma Incinerator": [
-            {
-              "name": "Heavy Plasma Incinerator",
-              "weaponType": "HEAVY",
-              "weaponValue": 1,
+              "name": "Plasma Incinerator (Supercharge)",
+              "weaponAbilities": [
+                "HEAVY"
+              ],
+              "attacks": 2,
+              "attackSkill": 3,
               "strength": 8,
-              "AP": -4,
+              "AP": -2,
               "damage": 2
             }
           ]
         }
       },
       "Hellblaster Sergeant": {
-        "pointsCost": 33,
-        "WS": 3,
-        "BS": 3,
-        "userStrength": 4,
-        "attacks": 3,
+        "pointsCost": 25,
         "attackGroups": {
-          "Plasma Incinerator": [
+          "Plasma Incinerator (Standard)": [
             {
-              "name": "Plasma Incinerator",
-              "weaponType": "RAPID_FIRE",
-              "weaponValue": 1,
+              "name": "Plasma Incinerator (Standard)",
+              "weaponAbilities": [
+                "HEAVY"
+              ],
+              "attacks": 2,
+              "attackSkill": 3,
               "strength": 7,
-              "AP": -4,
+              "AP": -2,
               "damage": 1
             }
           ],
-          "Assault Plasma Incinerator": [
+          "Plasma Incinerator (Supercharge)": [
             {
-              "name": "Assault Plasma Incinerator",
-              "weaponType": "ASSAULT",
-              "weaponValue": 3,
-              "strength": 6,
-              "AP": -4,
-              "damage": 1
-            }
-          ],
-          "Heavy Plasma Incinerator": [
-            {
-              "name": "Heavy Plasma Incinerator",
-              "weaponType": "HEAVY",
-              "weaponValue": 1,
+              "name": "Plasma Incinerator (Supercharge)",
+              "weaponAbilities": [
+                "HEAVY"
+              ],
+              "attacks": 2,
+              "attackSkill": 3,
               "strength": 8,
-              "AP": -4,
+              "AP": -2,
               "damage": 2
             }
           ]

@@ -16,51 +16,57 @@
           "Auto Boltstorm Gauntlet and Fragstorm Grenade Launcher": [
             {
               "name": "Auto Boltstorm Gauntlet",
-              "weaponType": "ASSAULT",
-              "weaponValue": 6,
+              "weaponAbilities": [
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attacks": 3,
+              "attackSkill": 3,
               "strength": 4,
               "AP": 0,
               "damage": 1
             },
             {
               "name": "Fragstorm Grenade Launcher",
-              "pointsExtra": 5,
-              "weaponType": "ASSAULT",
-              "weaponValue": "d6",
+              "weaponAbilities": [
+                /* "BLAST" */
+              ],
+              "attacks": "d6",
+              "attackSkill": 3,
               "strength": 4,
               "AP": 0,
-              "damage": 1,
-              "abilities": [
-                "BLAST"
-              ]
+              "damage": 1
             },
             {
-              "name": "Auto Boltstorm Gauntlet (melee)",
-              "weaponType": "MELEE",
-              "hitModifier": -1,
-              "strength": "x2",
-              "AP": -3,
+              "name": "Power Fist",
+              "weaponAbilities": [
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attackSkill": 4,
+              "strength": 8,
+              "AP": -2,
               "damage": 2
             }
           ],
           "Flamestorm Gauntlet": [
             {
               "name": "Flamestorm Gauntlet",
-              "weaponType": "ASSAULT",
-              "weaponValue": "2d6",
+              "weaponAbilities": [
+                "AUTO_HIT",
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attacks": "d6+1",
               "strength": 4,
               "AP": 0,
-              "damage": 1,
-              "abilities": [
-                "FLAMER"
-              ]
+              "damage": 1
             },
             {
-              "name": "Flamestorm Gauntlet (melee)",
-              "weaponType": "MELEE",
-              "hitModifier": -1,
-              "strength": "x2",
-              "AP": -3,
+              "name": "Power Fist",
+              "weaponAbilities": [
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attackSkill": 4,
+              "strength": 8,
+              "AP": -2,
               "damage": 2
             }
           ]
@@ -95,32 +101,36 @@
               ]
             },
             {
-              "name": "Auto Boltstorm Gauntlet (melee)",
-              "weaponType": "MELEE",
-              "hitModifier": -1,
-              "strength": "x2",
-              "AP": -3,
+              "name": "Power Fist",
+              "weaponAbilities": [
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attackSkill": 4,
+              "strength": 8,
+              "AP": -2,
               "damage": 2
             }
           ],
           "Flamestorm Gauntlet": [
             {
               "name": "Flamestorm Gauntlet",
-              "weaponType": "ASSAULT",
-              "weaponValue": "2d6",
+              "weaponAbilities": [
+                "AUTO_HIT",
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attacks": "d6+1",
               "strength": 4,
               "AP": 0,
-              "damage": 1,
-              "abilities": [
-                "FLAMER"
-              ]
+              "damage": 1
             },
             {
-              "name": "Flamestorm Gauntlet (melee)",
-              "weaponType": "MELEE",
-              "hitModifier": -1,
-              "strength": "x2",
-              "AP": -3,
+              "name": "Power Fist",
+              "weaponAbilities": [
+                "ON_ALL_TO_WOUND_REROLL"
+              ],
+              "attackSkill": 4,
+              "strength": 8,
+              "AP": -2,
               "damage": 2
             }
           ]

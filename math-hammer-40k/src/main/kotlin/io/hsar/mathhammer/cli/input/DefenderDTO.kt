@@ -8,5 +8,5 @@ data class DefenderDTO(
     val wounds: Int,
     val armourSave: Int,
     val invulnSave: Int = 7, // not always present
-    val abilities: List<DefenderAbilities> = emptyList()
+    val abilities: Map<DefenderAbilities, Int> = emptyMap()
 )

@@ -3,9 +3,6 @@
     "name": "Intercessors",
     "toughness": 4,
     "wounds": 2,
-    "armourSave": 3,
-    "abilities": [
-      "AP_REDUCTION"
-    ]
+    "armourSave": 3
   }
 ]

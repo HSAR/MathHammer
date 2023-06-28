@@ -3,7 +3,7 @@ package io.hsar.mathhammer.statistics
 import kotlin.math.absoluteValue
 
 object SaveCalculator {
-    fun failedSaves(AP: Int, save: Int, invuln: Int = 7): Double {
+    fun failedSaves(AP: Int = 0, save: Int, invuln: Int = 7): Double {
         return (save + AP.absoluteValue)
             .let { modifiedSave ->
                 Math.min(modifiedSave, invuln)
@@ -11,7 +11,7 @@ object SaveCalculator {
                         if (saveToUse >= 7) {
                             0.0 // no chance to save if the target is 7 on a rolling d6
                         } else {
-                            DiceProbability.averageChanceToPass(6, saveToUse)
+                            DiceProbability.averageSuccesses(6, saveToUse)
                         }
                     }
             }

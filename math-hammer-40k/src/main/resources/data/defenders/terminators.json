@@ -1,11 +1,8 @@
 [
   {
     "name": "Terminators",
-    "toughness": 4,
+    "toughness": 5,
     "wounds": 3,
-    "armourSave": 2,
-    "abilities": [
-      "AP_REDUCTION"
-    ]
+    "armourSave": 2
   }
 ]

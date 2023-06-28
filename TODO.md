@@ -1,4 +1,5 @@
 # Things to Do
 
-* All shooting attacks are resolved before melee attacks
-* Weapon auxiliary effects - dakka, etc.
+* Consider defending unit(s) when attacking (i.e. blast increase # of attacks made)
+* Unit leaders give effects to bodyguard unit
+* HAZARDOUS keyword for plasma supercharge

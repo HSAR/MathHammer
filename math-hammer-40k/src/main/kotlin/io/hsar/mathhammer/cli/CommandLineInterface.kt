@@ -53,14 +53,14 @@ class CommandLineInterface : Command("math-hammer") {
     private var comparisonMode = ComparisonMode.DIRECT
 
     override fun run() {
-        val offensiveProfiles = attackerFilePaths
-            .parseAttackers()
-            .let { attackerDTOs ->
-                generateUnitOffensives(attackerDTOs, comparisonMode)
-            }
-
         val defenders = defenderFilePaths
             .parseDefenders()
+
+        val offensiveProfiles = attackerFilePaths
+            .parseAttackers()
+            .let { attackers ->
+                generateUnitOffensives(attackers, comparisonMode)
+            }
 
         MathHammer(
             defenders = defenders
@@ -79,12 +79,22 @@ class CommandLineInterface : Command("math-hammer") {
                         } ${attackResult.name}"
                     }
 
-                    "${String.format("%.2f", offensiveProfile.modelsFiring)} ${offensiveProfile.firingModelName}s making $weapons hits"
+                    "${
+                        String.format(
+                            "%.2f",
+                            offensiveProfile.modelsFiring
+                        )
+                    } ${offensiveProfile.firingModelName}s making $weapons hits"
                 }.let { attackProfiles ->
                     val unitName = unitProfile.unitName
                     """
                                 $unitName $attackProfiles: 
-                                Expecting ${unitResult.expectedKills} kills on ${unitResult.defender.name} with ${String.format("%.3f", unitResult.expectedDamage)} damage.
+                                Expecting ${unitResult.expectedKills} kills on ${unitResult.defender.name} with ${
+                        String.format(
+                            "%.3f",
+                            unitResult.expectedDamage
+                        )
+                    } damage.
                             """.trimIndent()
                 }
             }
@@ -107,18 +117,21 @@ class CommandLineInterface : Command("math-hammer") {
                 .also { it.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE) }
         )
 
-        fun generateUnitOffensives(units: List<UnitDTO>, mode: ComparisonMode): List<UnitProfile> {
-            return units.flatMap { unit ->
+        fun generateUnitOffensives(
+            attackers: List<UnitDTO>,
+            mode: ComparisonMode
+        ): List<UnitProfile> {
+            return attackers.flatMap { unit ->
                 // Convert DTOs into necessary objects
                 val modelNameAndAttackGroupNameToAttackGroup = unit.models.map { (modelName, attackerTypeDTO) ->
-                    attackerTypeDTO.createAttackProfiles(unit.getAttackerName(attackerTypeDTO))
+                    attackerTypeDTO.createAttackProfiles(modelName)
                         .map { (attackGroupName, attackGroup) ->
                             (modelName to attackGroupName) to attackGroup
                         }.toMap()
                 }.sum()
 
                 unit.attackerComposition()
-                    .let { attackerComposition ->
+                    .let { attackerComposition -> // TODO What's going on here?
                         // Generate combinations of attack group names we will compare against each other
                         unit.models.map { (modelName, attackerTypeDTO) ->
                             attackerTypeDTO.attackGroups.keys
@@ -148,9 +161,12 @@ class CommandLineInterface : Command("math-hammer") {
                     .map { attackGroupNamesInSimulation ->
                         val attackGroupsToNumberOfModels = attackGroupNamesInSimulation
                             .map { modelNameToAttackGroupName ->
-                                modelNameAndAttackGroupNameToAttackGroup
-                                    .getOrElse(modelNameToAttackGroupName) { throw IllegalStateException("Could not find : $modelNameToAttackGroupName") } to
-                                        unit.unitComposition.getOrElse(modelNameToAttackGroupName.first) { throw IllegalStateException("Could not find : $modelNameToAttackGroupName") }
+                                val attackGroup = modelNameAndAttackGroupNameToAttackGroup
+                                    .getOrElse(modelNameToAttackGroupName) { throw IllegalStateException("Could not find: $modelNameToAttackGroupName") }
+                                val numberOfModels = unit.unitComposition.getOrElse(modelNameToAttackGroupName.first) {
+                                    throw IllegalStateException("Could not find: $modelNameToAttackGroupName")
+                                }
+                                attackGroup to numberOfModels
                             }.toMap()
 
                         attackGroupsToNumberOfModels
@@ -174,7 +190,7 @@ class CommandLineInterface : Command("math-hammer") {
                             .let { (totalPointsCost, scaledUnitOffensiveProfiles) ->
                                 UnitProfile(
                                     unitName = unit.name,
-                                    totalPointsCost = totalPointsCost.toDouble(), // TODO: Is this necessary?
+                                    totalPointsCost = totalPointsCost.toDouble(),
                                     offensiveProfiles = scaledUnitOffensiveProfiles
                                 )
                             }

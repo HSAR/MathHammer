@@ -7,131 +7,104 @@
     },
     "models": {
       "Assault Intercessor": {
-        "pointsCost": 19,
-        "WS": 3,
-        "BS": 3,
-        "userStrength": 4,
-        "attacks": 2,
+        "pointsCost": 18,
         "attackGroups": {
           "Heavy Bolt Pistol and Chainsword": [
             {
               "name": "Heavy Bolt Pistol",
-              "weaponType": "PISTOL",
-              "weaponValue": 1,
+              "attacks": 1,
+              "attackSkill": 3,
               "strength": 4,
               "AP": -1,
               "damage": 1
             },
             {
               "name": "Chainsword",
-              "weaponType": "MELEE",
-              "strength": "user",
+              "attacks": 4,
+              "attackSkill": 3,
+              "strength": 4,
               "AP": -1,
-              "damage": 1,
-              "abilities": [
-                "EXTRA_ATTACK_ON_CHARGE",
-                "EXTRA_ATTACK",
-                "MELEE_EXTRA_AP"
-              ]
+              "damage": 1
             }
           ]
         }
       },
       "Assault Intercessor Sergeant": {
-        "pointsCost": 19,
-        "WS": 3,
-        "BS": 3,
-        "userStrength": 4,
-        "attacks": 3,
+        "pointsCost": 18,
         "attackGroups": {
-          "Heavy Bolt Pistol and Chainsword": [
+          "Plasma Pistol and Chainsword": [
             {
-              "name": "Heavy Bolt Pistol",
-              "weaponType": "PISTOL",
-              "weaponValue": 1,
-              "strength": 4,
-              "AP": -1,
+              "name": "Plasma Pistol (Standard)",
+              "attacks": 1,
+              "attackSkill": 3,
+              "strength": 7,
+              "AP": -2,
               "damage": 1
             },
             {
               "name": "Chainsword",
-              "weaponType": "MELEE",
-              "strength": "user",
-              "AP": -1,
-              "damage": 1,
-              "abilities": [
-                "EXTRA_ATTACK_ON_CHARGE",
-                "EXTRA_ATTACK",
-                "MELEE_EXTRA_AP"
-              ]
-            }
-          ],
-          "Heavy Bolt Pistol and Power Sword": [
-            {
-              "name": "Heavy Bolt Pistol",
-              "weaponType": "PISTOL",
-              "weaponValue": 1,
+              "attacks": 4,
+              "attackSkill": 3,
               "strength": 4,
               "AP": -1,
               "damage": 1
-            },
-            {
-              "name": "Power Sword",
-              "pointsExtra": 5,
-              "weaponType": "MELEE",
-              "strength": "+1",
-              "AP": -3,
-              "damage": 1,
-              "abilities": [
-                "EXTRA_ATTACK_ON_CHARGE",
-                "MELEE_EXTRA_AP"
-              ]
             }
           ],
-          "Heavy Bolt Pistol and Power Fist": [
+          "Plasma Pistol and Power Weapon": [
             {
-              "name": "Heavy Bolt Pistol",
-              "weaponType": "PISTOL",
-              "weaponValue": 1,
-              "strength": 4,
-              "AP": -1,
+              "name": "Plasma Pistol (Standard)",
+              "attacks": 1,
+              "attackSkill": 3,
+              "strength": 7,
+              "AP": -2,
+              "damage": 1
+            },
+            {
+              "name": "Power Weapon",
+              "attacks": 4,
+              "attackSkill": 3,
+              "strength": 5,
+              "AP": -2,
+              "damage": 1
+            }
+          ],
+          "Plasma Pistol and Power Fist": [
+            {
+              "name": "Plasma Pistol (Standard)",
+              "attacks": 1,
+              "attackSkill": 3,
+              "strength": 7,
+              "AP": -2,
               "damage": 1
             },
             {
               "name": "Power Fist",
-              "pointsExtra": 10,
-              "weaponType": "MELEE",
-              "hitModifier": -1,
-              "strength": "x2",
-              "AP": -3,
-              "damage": 2,
-              "abilities": [
-                "EXTRA_ATTACK_ON_CHARGE",
-                "MELEE_EXTRA_AP"
-              ]
+              "attacks": 3,
+              "attackSkill": 3,
+              "strength": 8,
+              "AP": -2,
+              "damage": 2
             }
           ],
-          "Heavy Bolt Pistol and Thunder Hammer": [
+          "Plasma Pistol and Thunder Hammer": [
             {
-              "name": "Heavy Bolt Pistol",
-              "weaponType": "PISTOL",
-              "weaponValue": 1,
-              "strength": 4,
-              "AP": -1,
+              "name": "Plasma Pistol (Standard)",
+              "attacks": 1,
+              "attackSkill": 3,
+              "strength": 7,
+              "AP": -2,
               "damage": 1
             },
             {
               "name": "Thunder Hammer",
-              "pointsExtra": 20,
-              "weaponType": "MELEE",
-              "hitModifier": -1,
-              "strength": "x2",
+              "weaponAbilities": [
+                "ON_CRIT_TO_WOUND_MORTAL_WOUNDS"
+              ],
+              "attacks": 3,
+              "attackSkill": 4,
+              "strength": 8,
               "AP": -2,
-              "damage": 3,
-              "abilities": [
-                "EXTRA_ATTACK_ON_CHARGE",
-                "MELEE_EXTRA_AP"
-              ]
+              "damage": 2
             }
           ]
         }

@@ -4,5 +4,6 @@ enum class DefenderAbilities {
     NO_HIT_REROLLS,
     NO_WOUND_REROLLS,
     DAMAGE_REDUCTION,
-    AP_REDUCTION
+    AP_REDUCTION,
+    IGNORE_WOUNDS
 }
