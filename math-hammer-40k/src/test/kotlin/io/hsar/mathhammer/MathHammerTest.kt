@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.hsar.mathhammer.cli.input.UnitDTO
 import io.hsar.wh40k.combatsimulator.cli.CommandLineInterface
 import io.hsar.wh40k.combatsimulator.cli.CommandLineInterface.Companion.generateUnitOffensives
-import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -26,7 +25,7 @@ internal class MathHammerTest {
                 )
             }
         MathHammer(
-            defenders = objectMapper.readValue<List<DefenderDTO>>(getResourcePath("data/defenders/skorpekhs.json").readText())
+            defenders = objectMapper.readValue(getResourcePath("data/defenders/skorpekhs.json").readText())
         )
             .runSimulation(offensiveProfiles)
             .let { result ->

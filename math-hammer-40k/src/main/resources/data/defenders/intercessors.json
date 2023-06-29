@@ -3,6 +3,10 @@
     "name": "Intercessors",
     "toughness": 4,
     "wounds": 2,
-    "armourSave": 3
+    "armourSave": 3,
+    "unitSize": 10,
+    "keywords": [
+      "INFANTRY"
+    ]
   }
 ]

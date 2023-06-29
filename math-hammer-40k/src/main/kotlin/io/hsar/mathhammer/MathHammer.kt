@@ -5,7 +5,9 @@ import io.hsar.mathhammer.cli.input.DefenderAbilities.DAMAGE_REDUCTION
 import io.hsar.mathhammer.cli.input.DefenderAbilities.IGNORE_WOUNDS
 import io.hsar.mathhammer.cli.input.DefenderAbilities.NO_HIT_REROLLS
 import io.hsar.mathhammer.cli.input.DefenderAbilities.NO_WOUND_REROLLS
+import io.hsar.mathhammer.cli.input.WeaponAbility
 import io.hsar.mathhammer.cli.input.WeaponAbility.AUTO_HIT
+import io.hsar.mathhammer.cli.input.WeaponAbility.BLAST
 import io.hsar.mathhammer.cli.input.WeaponAbility.CRITS_ON
 import io.hsar.mathhammer.cli.input.WeaponAbility.EXTRA_ATTACKS
 import io.hsar.mathhammer.cli.input.WeaponAbility.HEAVY
@@ -27,6 +29,7 @@ import io.hsar.mathhammer.statistics.Reroll
 import io.hsar.mathhammer.statistics.SaveCalculator
 import io.hsar.mathhammer.statistics.WoundCalculator
 import io.hsar.wh40k.combatsimulator.cli.input.DefenderDTO
+import io.hsar.wh40k.combatsimulator.cli.input.DefenderKeyword
 
 
 class MathHammer(
@@ -53,10 +56,11 @@ class MathHammer(
                         attAbilities
                             .map { (ability, value) ->
                                 when (ability) {
-                                    EXTRA_ATTACKS -> value.toDouble()
+                                    BLAST -> defensiveProfile.unitSize / 5
+                                    EXTRA_ATTACKS -> value
 //                                    EXTRA_ATTACK_ON_CHARGE -> 1.0 // extra attack on the charge
-                                    else -> 0.0
-                                }
+                                    else -> 0
+                                }.toDouble()
                             }.sum()
                             .let { bonusAttacksGenerated ->
                                 bonusAttacksGenerated + attackProfile.attackNumber
@@ -131,10 +135,12 @@ class MathHammer(
 
             hits + crits + extraHits to autoWounds
         }.let { (hits, autoWounds) ->
-            val toWoundTarget = WoundCalculator.woundTarget(
-                strength = attackProfile.strength,
-                toughness = defensiveProfile.toughness
-            )
+            val toWoundTarget =
+                attackerAntiDefender(attAbilities, defensiveProfile.keywords) ?: WoundCalculator.woundTarget(
+                    strength = attackProfile.strength,
+                    toughness = defensiveProfile.toughness
+                )
+
             val rerolls = when {
                 NO_WOUND_REROLLS in defAbilities -> Reroll.NONE
                 ON_ALL_TO_WOUND_REROLL in attAbilities -> Reroll.ALL
@@ -159,6 +165,15 @@ class MathHammer(
             }
         }
     }
+
+    /**
+     * Checks whether the attack profile has an ANTI-X that applies to the defender.
+     * If multiple apply, return lowest (ie. best to-wound skill).
+     * If none, return null.
+     */
+    private fun attackerAntiDefender(attAbilities: Map<WeaponAbility, Int>, defAbilities: Set<DefenderKeyword>): Int? =
+        defAbilities.filter { it.applicableAntiAbility in attAbilities }
+            .minOfOrNull { attAbilities[it.applicableAntiAbility]!! }
 
     private fun woundsTaken(
         attackProfile: AttackProfile,

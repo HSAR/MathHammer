@@ -3,6 +3,9 @@
     "name": "Aggressors",
     "toughness": 6,
     "wounds": 3,
-    "armourSave": 3
+    "armourSave": 3,
+    "keywords": [
+      "INFANTRY"
+    ]
   }
 ]

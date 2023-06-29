@@ -3,6 +3,9 @@
     "name": "Terminators",
     "toughness": 5,
     "wounds": 3,
-    "armourSave": 2
+    "armourSave": 2,
+    "keywords": [
+      "INFANTRY"
+    ]
   }
 ]

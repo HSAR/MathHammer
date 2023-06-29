@@ -135,7 +135,8 @@ class CommandLineInterface : Command("math-hammer") {
                         // Generate combinations of attack group names we will compare against each other
                         unit.models.map { (modelName, attackerTypeDTO) ->
                             attackerTypeDTO.attackGroups.keys
-                                .map { eachKey -> modelName to eachKey }.toSet()
+                                .map { eachKey -> modelName to eachKey }
+                                .toSet()
                         }.let { attackGroupsForCrossProduct ->
 
                             val naiveCrossProduct = createCrossProduct(attackGroupsForCrossProduct)
@@ -154,6 +155,7 @@ class CommandLineInterface : Command("math-hammer") {
                                 .filter { listOfPairsOfModelNameToAttackGroupName ->
                                     listOfPairsOfModelNameToAttackGroupName.toMap().values.toSet().size != 1
                                 }
+                                .toSet()
 
                             naiveCrossProduct - illegalCombinations
                         }

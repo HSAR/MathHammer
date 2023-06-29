@@ -4,6 +4,9 @@
     "toughness": 4,
     "wounds": 3,
     "armourSave": 2,
-    "invulnSave": 4
+    "invulnSave": 4,
+    "keywords": [
+      "INFANTRY"
+    ]
   }
 ]

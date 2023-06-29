@@ -3,7 +3,7 @@ package io.hsar.mathhammer.cli.input
 data class WeaponProfile(
     val name: String,
     val pointsExtra: Int = 0,
-    val weaponAbilities: Map<WeaponAbility, Int> = emptyMap(),
+    val weaponAbilities: Map<WeaponAbility, Int> = emptyMap(), // For ANTI-X implementation see WeaponDTO::toProfile
     val attacks: String,
     val attackSkill: Int = 7,
     val strength: Int,
@@ -25,8 +25,10 @@ data class WeaponDTO(
         .map { abilityString ->
             if (' ' in abilityString) {
                 abilityString.split(' ', ignoreCase = true, limit = 2)
-                    .let { (abilityString, abilityValue) ->
-                        WeaponAbility.valueOf(abilityString) to abilityValue.toInt()
+                    .let { (abilityKeyString, abilityValueString) ->
+                        val abilityKey = WeaponAbility.valueOf(abilityKeyString)
+                        val abilityValue = abilityValueString.toInt()
+                        abilityKey to abilityValue
                     }
             } else {
                 WeaponAbility.valueOf(abilityString) to -1

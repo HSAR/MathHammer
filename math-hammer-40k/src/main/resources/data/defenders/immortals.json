@@ -3,6 +3,10 @@
     "name": "Immortals",
     "toughness": 5,
     "wounds": 1,
-    "armourSave": 3
+    "armourSave": 3,
+    "unitSize": 10,
+    "keywords": [
+      "INFANTRY"
+    ]
   }
 ]

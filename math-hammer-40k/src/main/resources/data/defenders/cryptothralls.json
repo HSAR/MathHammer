@@ -6,6 +6,9 @@
     "armourSave": 3,
     "abilities": {
       "IGNORE_WOUNDS": 4
-    }
+    },
+    "keywords": [
+      "INFANTRY"
+    ]
   }
 ]

@@ -3,6 +3,10 @@
     "name": "Necron Warriors",
     "toughness": 4,
     "wounds": 1,
-    "armourSave": 3
+    "armourSave": 3,
+    "keywords": [
+      "INFANTRY"
+    ],
+    "unitSize": 20
   }
 ]
