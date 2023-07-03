@@ -84,7 +84,7 @@ class MathHammer(
             .toMap()
             .let { offensivesToResults ->
                 val expectedDamage = offensivesToResults.flatMap { (_, attackResults) ->
-                    attackResults.map { it.expectedHits * it.damagePerHit }
+                    attackResults.map { it.unsavedHits * it.damagePerHit }
                 }.sum()
                 val allAttackResults = offensivesToResults.values.flatten()
                 UnitResult(
@@ -203,7 +203,7 @@ class MathHammer(
             .let { expectedSuccessfulAttacks ->
                 AttackResult(
                     name = attackProfile.attackName,
-                    expectedHits = expectedSuccessfulAttacks,
+                    unsavedHits = expectedSuccessfulAttacks,
                     damagePerHit = effectiveDamage
                 )
             }
@@ -213,7 +213,7 @@ class MathHammer(
             if (mortalWounds > 0) {
                 AttackResult(
                     name = "${attackProfile.attackName} (Mortal Wounds)",
-                    expectedHits = mortalWounds,
+                    unsavedHits = mortalWounds,
                     damagePerHit = 1.0
                 )
             } else {

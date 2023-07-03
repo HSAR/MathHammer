@@ -7,8 +7,8 @@ object KillsCalculator {
     fun getKills(targetWounds: Int, ignoreWoundsTarget: Int? = null, attackResults: List<AttackResult>): Int {
         val damagingHits = attackResults
             .flatMap { eachAttackResult ->
-                ((1..eachAttackResult.expectedHits.toInt()).map { 1.0 } + // whole attacks cause full damage
-                        listOf(eachAttackResult.expectedHits % 1.0)) // partial attacks cause partial damage
+                ((1..eachAttackResult.unsavedHits.toInt()).map { 1.0 } + // whole attacks cause full damage
+                        listOf(eachAttackResult.unsavedHits % 1.0)) // partial attacks cause partial damage
                     .map { eachHit ->
                         eachHit * eachAttackResult.damagePerHit // scale by damage
                     }

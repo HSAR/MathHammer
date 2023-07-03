@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Infernus Squad",
+    "unitComposition": {
+      "Infernus Marine": 4,
+      "Infernus Sergeant": 1
+    },
+    "models": {
+      "Infernus Marine": {
+        "pointsCost": 18,
+        "attackGroups": {
+          "Pyreblaster": [
+            {
+              "name": "Pyreblaster",
+              "weaponAbilities": [
+                "AUTO_HIT"
+              ],
+              "attacks": "d6",
+              "strength": 5,
+              "AP": 0,
+              "damage": 1
+            }
+          ]
+        }
+      },
+      "Infernus Sergeant": {
+        "pointsCost": 18,
+        "attackGroups": {
+          "Pyreblaster": [
+            {
+              "name": "Pyreblaster",
+              "weaponAbilities": [
+                "AUTO_HIT"
+              ],
+              "attacks": "d6",
+              "strength": 5,
+              "AP": 0,
+              "damage": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+]

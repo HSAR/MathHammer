@@ -18,7 +18,7 @@ data class WeaponDTO(
     val attacks: String,
     val attackSkill: Int = 7,
     val strength: Int,
-    val AP: Int,
+    val AP: Int = 0,
     val damage: String,
 ) {
     fun toProfile(): WeaponProfile = this.weaponAbilities

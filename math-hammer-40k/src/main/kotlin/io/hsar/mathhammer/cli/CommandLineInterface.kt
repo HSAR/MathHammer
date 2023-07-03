@@ -70,11 +70,11 @@ class CommandLineInterface : Command("math-hammer") {
             )
             .map { (unitResult, unitProfile) ->
                 unitResult.offensivesToResults.map { (offensiveProfile, offensiveResults) ->
-                    val weapons = offensiveResults.map { attackResult ->
+                    val weaponResults = offensiveResults.map { attackResult ->
                         "${
                             String.format(
                                 "%.2f",
-                                attackResult.expectedHits
+                                attackResult.unsavedHits
                             )
                         } ${attackResult.name}"
                     }
@@ -84,7 +84,7 @@ class CommandLineInterface : Command("math-hammer") {
                             "%.2f",
                             offensiveProfile.modelsFiring
                         )
-                    } ${offensiveProfile.firingModelName}s making $weapons hits"
+                    } ${offensiveProfile.firingModelName}s making $weaponResults unsaved hits"
                 }.let { attackProfiles ->
                     val unitName = unitProfile.unitName
                     """
